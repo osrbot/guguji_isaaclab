@@ -66,32 +66,28 @@ source/guguji_locomotion/
 └── guguji_locomotion/
     ├── assets/                    # 机器人 ArticulationCfg 定义
     └── tasks/locomotion/velocity/
-        ├── velocity_env_cfg.py    # 基础环境配置
+        ├── velocity_env_cfg.py    # 基础环境配置（场景、观测、奖励、终止条件）
         ├── mdp/
-        │   ├── rewards.py         # 自定义奖励函数
-        │   └── curriculums.py     # 课程学习
+        │   ├── actions.py         # ReferenceGaitAction — 正弦参考步态 + 残差策略
+        │   ├── observations.py    # gait_phase_obs（sin/cos 相位，供策略条件化）
+        │   ├── rewards.py         # 自定义奖励函数（从 guguji_rl 迁移）
+        │   └── curriculums.py     # terrain_levels_vel + velocity_command_curriculum
         └── config/guguji/
-            ├── __init__.py        # Gym 环境注册
-            ├── flat_env_cfg.py    # 平坦地形配置
-            ├── rough_env_cfg.py   # 粗糙地形配置
+            ├── __init__.py            # Gym 环境注册
+            ├── flat_env_cfg.py        # 平坦地形 + 速度课程（0.18→0.26 m/s）
+            ├── rough_env_cfg.py       # 粗糙地形 + 高度扫描器 + 地形课程
             └── agents/
-                └── rsl_rl_ppo_cfg.py  # PPO 超参数
+                └── rsl_rl_ppo_cfg.py  # PPO 超参数（Flat + Rough 两个变体）
 ```
 
-## 奖励函数说明
+## 已注册环境
 
-主要奖励项（来自 guguji_rl 迁移，权重已调优）：
-
-| 奖励项 | 权重 | 说明 |
-|--------|------|------|
-| 速度跟踪 | 4.8 | 指数核，σ=0.10 |
-| 前向进度 | 6.0 | 正向位移奖励 |
-| 直立保持 | 1.6 | `exp(-4*(roll²+pitch²))` |
-| 高度保持 | 0.9 | `exp(-8*height_error²)` |
-| 髋关节交替 | 0.5 | 左右髋反相运动 |
-| 膝关节弯曲 | 0.35 | 目标弯曲角 0.28 rad |
-| 存活奖励 | 0.6/步 | — |
-| 跌倒惩罚 | -15.0 | 终止时触发 |
+| Gym ID | 地形 | 环境数 | 用途 |
+|--------|------|--------|------|
+| `Isaac-Velocity-Flat-Guguji-v0` | 平坦 | 4096 | 训练（速度课程 0.18→0.26 m/s） |
+| `Isaac-Velocity-Flat-Guguji-Play-v0` | 平坦 | 50 | 评估 / 可视化 |
+| `Isaac-Velocity-Rough-Guguji-v0` | 粗糙 | 2048 | 训练（地形课程） |
+| `Isaac-Velocity-Rough-Guguji-Play-v0` | 粗糙 | 50 | 评估 / 可视化 |
 
 ## 更新日志
 

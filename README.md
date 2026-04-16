@@ -63,16 +63,28 @@ source/guguji_locomotion/
 └── guguji_locomotion/
     ├── assets/              # Robot ArticulationCfg
     └── tasks/locomotion/velocity/
-        ├── velocity_env_cfg.py   # Base env config
+        ├── velocity_env_cfg.py   # Base env config (scene, obs, rewards, terminations)
         ├── mdp/
-        │   ├── rewards.py        # Custom reward functions
-        │   └── curriculums.py
+        │   ├── actions.py        # ReferenceGaitAction — sinusoidal gait + residual policy
+        │   ├── observations.py   # gait_phase_obs (sin/cos phase for policy conditioning)
+        │   ├── rewards.py        # Custom reward functions (ported from guguji_rl)
+        │   └── curriculums.py    # terrain_levels_vel + velocity_command_curriculum
         └── config/guguji/
-            ├── flat_env_cfg.py
-            ├── rough_env_cfg.py
+            ├── __init__.py           # Gym environment registrations
+            ├── flat_env_cfg.py       # Flat terrain + velocity curriculum (0.18→0.26 m/s)
+            ├── rough_env_cfg.py      # Rough terrain + height scanner + terrain curriculum
             └── agents/
-                └── rsl_rl_ppo_cfg.py
+                └── rsl_rl_ppo_cfg.py # PPO hyperparameters (Flat + Rough variants)
 ```
+
+## Registered Environments
+
+| Gym ID | Terrain | Envs | Use |
+|--------|---------|------|-----|
+| `Isaac-Velocity-Flat-Guguji-v0` | Flat | 4096 | Training (curriculum 0.18→0.26 m/s) |
+| `Isaac-Velocity-Flat-Guguji-Play-v0` | Flat | 50 | Evaluation / visualization |
+| `Isaac-Velocity-Rough-Guguji-v0` | Rough | 2048 | Training (terrain curriculum) |
+| `Isaac-Velocity-Rough-Guguji-Play-v0` | Rough | 50 | Evaluation / visualization |
 
 ## Changelog
 
