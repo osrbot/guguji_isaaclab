@@ -52,6 +52,20 @@ GUGUJI_CFG = ArticulationCfg(
         asset_path=GUGUJI_URDF_PATH,
         # USD cache is written next to the URDF on first run
         usd_dir=os.path.join(os.path.dirname(GUGUJI_URDF_PATH), "usd_cache"),
+        # Guguji is a free-standing biped — do NOT fix the base
+        fix_base=False,
+        # merge_fixed_joints keeps the link count manageable
+        merge_fixed_joints=True,
+        # joint_drive: position control; stiffness/damping are overridden by
+        # ImplicitActuatorCfg below, but UrdfFileCfg still requires a value
+        joint_drive=sim_utils.UrdfConverterCfg.JointDriveCfg(
+            drive_type="force",
+            target_type="position",
+            gains=sim_utils.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(
+                stiffness=80.0,
+                damping=4.0,
+            ),
+        ),
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
