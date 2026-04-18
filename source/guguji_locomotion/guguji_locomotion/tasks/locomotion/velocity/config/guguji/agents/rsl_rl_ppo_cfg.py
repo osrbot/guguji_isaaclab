@@ -33,15 +33,16 @@ class GugujiFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         class_name="MLPModel",
         hidden_dims=[256, 256, 128],
         activation="elu",
-        stochastic=True,
-        init_noise_std=1.0,
+        distribution_cfg=RslRlMLPModelCfg.GaussianDistributionCfg(
+            init_std=1.0,
+            std_type="log",  # log space: std = exp(param) > 0 always
+        ),
     )
     critic = RslRlMLPModelCfg(
         class_name="MLPModel",
         hidden_dims=[256, 256, 128],
         activation="elu",
-        stochastic=False,
-        init_noise_std=1.0,
+        distribution_cfg=None,  # deterministic critic
     )
     algorithm = RslRlPpoAlgorithmCfg(
         value_loss_coef=0.5,

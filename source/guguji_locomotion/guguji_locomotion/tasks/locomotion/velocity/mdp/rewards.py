@@ -233,6 +233,21 @@ def knee_flexion_reward(
     return torch.exp(-((avg_flexion - target) ** 2) / (2.0 * sigma ** 2))
 
 
+def knee_symmetry_penalty(
+    env: ManagerBasedRLEnv,
+    left_knee_name: str,
+    right_knee_name: str,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Penalize asymmetric knee flexion between left and right legs."""
+    asset = env.scene[asset_cfg.name]
+    joint_names = asset.data.joint_names
+    left_idx = joint_names.index(left_knee_name)
+    right_idx = joint_names.index(right_knee_name)
+    diff = asset.data.joint_pos[:, left_idx] - asset.data.joint_pos[:, right_idx]
+    return torch.square(diff)
+
+
 # ---------------------------------------------------------------------------
 # Yaw / rotation penalties
 # ---------------------------------------------------------------------------

@@ -248,7 +248,7 @@ class RewardsCfg:
     # -- gait quality
     hip_alternation = RewTerm(
         func=mdp.hip_alternation_reward,
-        weight=0.5,
+        weight=2.0,
         params={
             "left_hip_name": "left_hip_pitch_joint",
             "right_hip_name": "right_hip_pitch_joint",
@@ -258,7 +258,7 @@ class RewardsCfg:
     )
     knee_flexion = RewTerm(
         func=mdp.knee_flexion_reward,
-        weight=0.35,
+        weight=0.8,
         params={
             "left_knee_name": "left_knee_pitch_joint",
             "right_knee_name": "right_knee_pitch_joint",
@@ -266,9 +266,17 @@ class RewardsCfg:
             "sigma": 0.15,
         },
     )
+    knee_symmetry = RewTerm(
+        func=mdp.knee_symmetry_penalty,
+        weight=-1.0,
+        params={
+            "left_knee_name": "left_knee_pitch_joint",
+            "right_knee_name": "right_knee_pitch_joint",
+        },
+    )
     feet_air_time = RewTerm(
         func=mdp.feet_air_time_positive_biped,
-        weight=0.5,
+        weight=1.5,
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_link"),
             "command_name": "base_velocity",
