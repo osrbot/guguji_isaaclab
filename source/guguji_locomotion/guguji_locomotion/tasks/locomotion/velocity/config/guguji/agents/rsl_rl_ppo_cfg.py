@@ -21,13 +21,13 @@ from isaaclab_rl.rsl_rl import (
 @configclass
 class GugujiFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
-    max_iterations = 300
+    max_iterations = 500
     save_interval = 50
     experiment_name = "guguji_flat"
     empirical_normalization = False
 
-    # Empty dict: resolve_obs_groups auto-maps actor/critic to the "policy" group
-    obs_groups = {}
+    # Explicitly map actor and critic to the "policy" observation group
+    obs_groups = {"actor": ["policy"], "critic": ["policy"]}
 
     actor = RslRlMLPModelCfg(
         class_name="MLPModel",
@@ -47,7 +47,7 @@ class GugujiFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         value_loss_coef=0.5,
         use_clipped_value_loss=True,
         clip_param=0.15,
-        entropy_coef=0.0,
+        entropy_coef=0.005,
         num_learning_epochs=5,
         num_mini_batches=4,
         learning_rate=6.0e-5,

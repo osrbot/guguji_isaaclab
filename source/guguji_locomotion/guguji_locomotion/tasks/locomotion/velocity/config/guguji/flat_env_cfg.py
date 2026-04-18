@@ -22,19 +22,19 @@ class GugujiFlatEnvCfg(GugujiRoughEnvCfg):
         # No height scan needed on flat terrain
         self.scene.height_scanner = None
         self.observations.policy.height_scan = None
-        # Replace terrain curriculum with velocity curriculum (0.18 -> 0.26 m/s)
+        # Replace terrain curriculum with velocity curriculum (0.10 -> 0.30 m/s, 3 stages)
         self.curriculum.terrain_levels = None
         self.curriculum.velocity_command = CurrTerm(
             func=mdp.velocity_command_curriculum,
             params={
                 "command_name": "base_velocity",
-                "min_vel": 0.18,
-                "max_vel": 0.26,
+                "min_vel": 0.10,
+                "max_vel": 0.30,
                 "success_threshold": 0.8,
             },
         )
         # Start commands at the lowest curriculum velocity
-        self.commands.base_velocity.ranges.lin_vel_x = (0.18, 0.18)
+        self.commands.base_velocity.ranges.lin_vel_x = (0.10, 0.10)
         # Slightly more envs since flat is cheaper
         self.scene.num_envs = 4096
 

@@ -279,7 +279,8 @@ class RewardsCfg:
     # -- penalties
     action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.004)
     joint_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=-0.05)
-    lateral_velocity = RewTerm(func=mdp.lin_vel_y_l2, weight=-0.08)
+    lateral_velocity = RewTerm(func=mdp.lin_vel_y_l2, weight=-0.3)
+    yaw_rate = RewTerm(func=mdp.ang_vel_z_l2, weight=-0.5)
     backward_velocity = RewTerm(func=mdp.backward_velocity_penalty, weight=-2.8)
     stall_penalty = RewTerm(
         func=mdp.stall_penalty,

@@ -234,6 +234,19 @@ def knee_flexion_reward(
 
 
 # ---------------------------------------------------------------------------
+# Yaw / rotation penalties
+# ---------------------------------------------------------------------------
+
+def ang_vel_z_l2(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """L2 penalty on yaw angular velocity to prevent spinning / circling."""
+    asset = env.scene[asset_cfg.name]
+    return torch.square(asset.data.root_ang_vel_b[:, 2])
+
+
+# ---------------------------------------------------------------------------
 # Termination helpers (used as termination terms, not rewards)
 # ---------------------------------------------------------------------------
 
