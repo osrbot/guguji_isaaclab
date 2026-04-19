@@ -252,8 +252,8 @@ class RewardsCfg:
         params={
             "left_hip_name": "left_hip_pitch_joint",
             "right_hip_name": "right_hip_pitch_joint",
-            "target_separation": 0.36,
-            "antiphase_sigma": 0.18,
+            "target_separation": 0.50,   # larger stride target (was 0.36)
+            "antiphase_sigma": 0.20,
         },
     )
     knee_flexion = RewTerm(
@@ -262,7 +262,7 @@ class RewardsCfg:
         params={
             "left_knee_name": "left_knee_pitch_joint",
             "right_knee_name": "right_knee_pitch_joint",
-            "target": 0.28,
+            "target": 0.38,   # higher knee lift target (was 0.28)
             "sigma": 0.15,
         },
     )
@@ -280,7 +280,7 @@ class RewardsCfg:
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_link"),
             "command_name": "base_velocity",
-            "threshold": 0.3,
+            "threshold": 0.2,   # easier to trigger (was 0.3)
         },
     )
 

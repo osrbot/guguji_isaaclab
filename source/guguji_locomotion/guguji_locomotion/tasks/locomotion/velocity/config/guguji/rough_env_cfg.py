@@ -20,17 +20,17 @@ class GugujiRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.actions.joint_pos = mdp.ReferenceGaitActionCfg(
             asset_name="robot",
             joint_names=[".*"],
-            scale=0.08,
+            scale=0.12,           # larger residual budget for the policy
             gait_period=0.72,
-            stance_ratio=0.60,
-            hip_pitch_amplitude=0.34,
+            stance_ratio=0.55,    # slightly shorter stance → more air time
+            hip_pitch_amplitude=0.45,   # bigger stride (was 0.34)
             hip_pitch_bias=0.04,
-            knee_pitch_amplitude=0.46,
-            knee_pitch_bias=0.12,
-            swing_knee_scale=1.10,
+            knee_pitch_amplitude=0.60,  # higher knee lift (was 0.46)
+            knee_pitch_bias=0.10,
+            swing_knee_scale=1.35,      # more knee flexion in swing (was 1.10)
             ankle_pitch_amplitude=0.22,
             ankle_pitch_bias=-0.05,
-            push_off_ankle_scale=0.22,
+            push_off_ankle_scale=0.25,
         )
         # Add gait phase (sin, cos) to policy observations so the policy can
         # condition its residuals on the current phase of the reference gait.
