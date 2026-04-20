@@ -158,15 +158,17 @@ class ObservationsCfg:
 
 @configclass
 class EventCfg:
-    """Domain randomization events."""
+    """Domain randomization events — expanded for sim2sim and sim2real robustness."""
+
+    # ---- startup: randomized once per training run, simulates hardware variability ----
 
     physics_material = EventTerm(
         func=mdp.randomize_rigid_body_material,
         mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
-            "static_friction_range": (0.7, 1.0),
-            "dynamic_friction_range": (0.5, 0.8),
+            "static_friction_range": (0.5, 1.25),   # wider range for sim2real
+            "dynamic_friction_range": (0.4, 0.9),
             "restitution_range": (0.0, 0.0),
             "num_buckets": 64,
         },
@@ -176,17 +178,86 @@ class EventCfg:
         mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names="base_link"),
-            "mass_distribution_params": (-0.5, 0.5),  # small robot: ±0.5 kg
+            "mass_distribution_params": (-0.5, 0.5),
             "operation": "add",
         },
     )
+    # Randomize mass of all links to simulate manufacturing tolerances
+    add_link_masses = EventTerm(
+        func=mdp.randomize_rigid_body_mass,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
+            "mass_distribution_params": (-0.05, 0.05),
+            "operation": "add",
+        },
+    )
+    # Actuator gain randomization — most critical for sim2real (motor variability ±20%)
+    randomize_hip_knee_gains = EventTerm(
+        func=mdp.randomize_actuator_gains,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", joint_names=[".*hip_pitch_joint", ".*knee_pitch_joint"]),
+            "stiffness_distribution_params": (64.0, 96.0),   # kp: 80 ± 20%
+            "damping_distribution_params": (3.2, 4.8),        # kd: 4 ± 20%
+            "operation": "abs",
+            "distribution": "uniform",
+        },
+    )
+    randomize_ankle_pitch_gains = EventTerm(
+        func=mdp.randomize_actuator_gains,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", joint_names=[".*ankle_pitch_joint"]),
+            "stiffness_distribution_params": (32.0, 48.0),   # kp: 40 ± 20%
+            "damping_distribution_params": (1.6, 2.4),        # kd: 2 ± 20%
+            "operation": "abs",
+            "distribution": "uniform",
+        },
+    )
+    randomize_ankle_roll_gains = EventTerm(
+        func=mdp.randomize_actuator_gains,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", joint_names=[".*ankle_joint"]),
+            "stiffness_distribution_params": (24.0, 36.0),   # kp: 30 ± 20%
+            "damping_distribution_params": (1.2, 1.8),        # kd: 1.5 ± 20%
+            "operation": "abs",
+            "distribution": "uniform",
+        },
+    )
+    # Joint friction and armature — simulates real joint stiction and rotor inertia
+    randomize_joint_friction = EventTerm(
+        func=mdp.randomize_joint_parameters,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", joint_names=[".*"]),
+            "friction_distribution_params": (0.0, 0.05),
+            "armature_distribution_params": (0.0, 0.01),
+            "operation": "add",
+            "distribution": "uniform",
+        },
+    )
+    # COM offset randomization — simulates payload placement and assembly tolerances
+    randomize_base_com = EventTerm(
+        func=mdp.randomize_rigid_body_com,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names="base_link"),
+            "com_range": {"x": (-0.03, 0.03), "y": (-0.02, 0.02), "z": (-0.02, 0.02)},
+        },
+    )
+
+    # ---- reset: randomized at each episode reset ----
+
+    # External force/torque applied at reset — simulates payload and assembly offsets
     base_external_force_torque = EventTerm(
         func=mdp.apply_external_force_torque,
         mode="reset",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names="base_link"),
-            "force_range": (0.0, 0.0),
-            "torque_range": (-0.0, 0.0),
+            "force_range": (-3.0, 3.0),
+            "torque_range": (-1.0, 1.0),
         },
     )
     reset_base = EventTerm(
@@ -208,15 +279,30 @@ class EventCfg:
         func=mdp.reset_joints_by_scale,
         mode="reset",
         params={
-            "position_range": (0.85, 1.15),  # tighter than quadruped — biped is less stable
+            "position_range": (0.85, 1.15),
             "velocity_range": (0.0, 0.0),
         },
     )
+
+    # ---- interval: periodic disturbances during the episode ----
+
+    # Stronger and more frequent pushes
     push_robot = EventTerm(
         func=mdp.push_by_setting_velocity,
         mode="interval",
-        interval_range_s=(10.0, 15.0),
-        params={"velocity_range": {"x": (-0.3, 0.3), "y": (-0.2, 0.2)}},
+        interval_range_s=(8.0, 12.0),
+        params={"velocity_range": {"x": (-0.4, 0.4), "y": (-0.3, 0.3)}},
+    )
+    # Gravity perturbation — simulates IMU bias and slight slope effects
+    randomize_gravity = EventTerm(
+        func=mdp.randomize_physics_scene_gravity,
+        mode="interval",
+        interval_range_s=(8.0, 12.0),
+        params={
+            "gravity_distribution_params": ([0.0, 0.0, 0.0], [0.05, 0.05, 0.1]),
+            "operation": "add",
+            "distribution": "gaussian",
+        },
     )
 
 
