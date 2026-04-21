@@ -291,6 +291,77 @@ Kp=80, Kd=4（髋/膝）
 - Kd 越大 → 阻尼越强，运动越平滑，但响应变慢
 - 力矩上限 10 Nm 防止执行器输出过大力矩损坏关节
 
+**完整数据流向图：**
+
+```mermaid
+flowchart TD
+    subgraph OBS["观测输入 (38维)"]
+        O1["base_lin_vel (3)"]
+        O2["base_ang_vel (3)"]
+        O3["projected_gravity (3)"]
+        O4["velocity_commands (3)"]
+        O5["joint_pos (8)"]
+        O6["joint_vel (8)"]
+        O7["last_action (8)"]
+        O8["gait_phase sin/cos (2)"]
+    end
+
+    subgraph NET["策略网络 MLP"]
+        L1["Linear 38→256 + ELU"]
+        L2["Linear 256→256 + ELU"]
+        L3["Linear 256→128 + ELU"]
+        L4["Linear 128→8"]
+        DIST["GaussianDistribution\n(训练时采样, 推理时取均值)"]
+        L1 --> L2 --> L3 --> L4 --> DIST
+    end
+
+    subgraph ACT["动作处理 ReferenceGaitAction"]
+        R1["policy_output × scale(0.08)\n→ 残差 rad"]
+        R2["reference_gait(phase)\n正弦波参考步态"]
+        R3["q_default\n名义站立姿态"]
+        ADD["q_target = q_default\n+ ref_offset + residual"]
+        R1 --> ADD
+        R2 --> ADD
+        R3 --> ADD
+    end
+
+    subgraph SIM["物理仿真 PhysX"]
+        PD["ImplicitActuator PD控制\nτ = Kp×(q_target−q) + Kd×(−q_dot)"]
+        PHY["刚体动力学\n200 Hz"]
+        PD --> PHY
+    end
+
+    subgraph ROBOT["机器人状态更新"]
+        S1["关节位置 q (rad)"]
+        S2["关节速度 q_dot (rad/s)"]
+        S3["躯干位姿 / 速度"]
+        S4["接触力 (ContactSensor)"]
+    end
+
+    subgraph RWD["奖励计算"]
+        RW1["✅ track_lin_vel_x_exp\n✅ forward_progress\n✅ alive / upright / height"]
+        RW2["❌ yaw_rate\n❌ lateral_velocity\n❌ stall_penalty"]
+        RTOT["Σ reward_t"]
+        RW1 --> RTOT
+        RW2 --> RTOT
+    end
+
+    OBS --> NET
+    NET --> ACT
+    ACT --> |"q_target (rad)"| SIM
+    SIM --> ROBOT
+    ROBOT --> |"下一步观测"| OBS
+    ROBOT --> RWD
+    RTOT --> |"PPO 更新策略"| NET
+
+    style OBS fill:#1a3a5c,color:#fff
+    style NET fill:#2d5a27,color:#fff
+    style ACT fill:#5a3a1a,color:#fff
+    style SIM fill:#3a1a5a,color:#fff
+    style ROBOT fill:#1a4a4a,color:#fff
+    style RWD fill:#4a1a1a,color:#fff
+```
+
 ### 4.4 终止条件
 
 ```python
