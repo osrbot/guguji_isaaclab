@@ -15,7 +15,7 @@ from __future__ import annotations
 import os
 
 import isaaclab.sim as sim_utils
-from isaaclab.actuators import ImplicitActuatorCfg
+from isaaclab.actuators import DelayedPDActuatorCfg, ImplicitActuatorCfg
 from isaaclab.assets import ArticulationCfg
 
 # ---------------------------------------------------------------------------
@@ -88,29 +88,35 @@ GUGUJI_CFG = ArticulationCfg(
         joint_vel={".*": 0.0},
     ),
     actuators={
-        # Hip and knee: higher stiffness, more torque
-        "hip_knee": ImplicitActuatorCfg(
+        # Hip and knee: delayed PD to model CAN bus latency (0~1 physics steps = 0~5ms at 200Hz)
+        "hip_knee": DelayedPDActuatorCfg(
             joint_names_expr=[".*hip_pitch_joint", ".*knee_pitch_joint"],
             effort_limit=10.0,
             velocity_limit=2.0,
-            stiffness=80.0,   # kp — needs tuning in sim
-            damping=4.0,      # kd
+            stiffness=80.0,
+            damping=4.0,
+            min_delay=0,
+            max_delay=1,
         ),
-        # Ankle pitch: medium stiffness
-        "ankle_pitch": ImplicitActuatorCfg(
+        # Ankle pitch: medium stiffness, same delay
+        "ankle_pitch": DelayedPDActuatorCfg(
             joint_names_expr=[".*ankle_pitch_joint"],
             effort_limit=8.0,
             velocity_limit=2.0,
             stiffness=40.0,
             damping=2.0,
+            min_delay=0,
+            max_delay=1,
         ),
-        # Ankle roll: softer
-        "ankle_roll": ImplicitActuatorCfg(
+        # Ankle roll: softer, same delay
+        "ankle_roll": DelayedPDActuatorCfg(
             joint_names_expr=[".*ankle_joint"],
             effort_limit=8.0,
             velocity_limit=2.0,
             stiffness=30.0,
             damping=1.5,
+            min_delay=0,
+            max_delay=1,
         ),
     },
     soft_joint_pos_limit_factor=0.9,

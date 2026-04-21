@@ -95,6 +95,15 @@ cd ~/rlgpu_ws/IsaacLab
 
 play 脚本运行结束后会自动将策略导出到 `logs/.../exported/policy.pt`（TorchScript）和 `policy.onnx`，可直接用于部署。
 
+
+## 分析
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+
+./isaaclab.sh -p -m tensorboard.main --logdir=logs/rsl_rl/guguji_flat
+‵‵‵
+
 ## 项目结构
 
 ```

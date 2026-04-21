@@ -95,6 +95,14 @@ cd ~/rlgpu_ws/IsaacLab
 
 The play script also exports the policy to `logs/.../exported/policy.pt` (TorchScript) and `policy.onnx` for deployment.
 
+## Analytics
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+
+./isaaclab.sh -p -m tensorboard.main --logdir=logs/rsl_rl/guguji_flat
+‵‵‵
+
 ## Project Structure
 
 ```
