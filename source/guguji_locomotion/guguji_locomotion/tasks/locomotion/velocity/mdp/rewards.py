@@ -248,6 +248,24 @@ def knee_symmetry_penalty(
     return torch.square(diff)
 
 
+def hip_symmetry_penalty(
+    env: ManagerBasedRLEnv,
+    left_hip_name: str,
+    right_hip_name: str,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Penalize asymmetric hip pitch between left and right legs.
+
+    Penalizes (left + right)^2, which is zero only when hips are equal and opposite.
+    """
+    asset = env.scene[asset_cfg.name]
+    joint_names = asset.data.joint_names
+    left_idx = joint_names.index(left_hip_name)
+    right_idx = joint_names.index(right_hip_name)
+    sum_pos = asset.data.joint_pos[:, left_idx] + asset.data.joint_pos[:, right_idx]
+    return torch.square(sum_pos)
+
+
 # ---------------------------------------------------------------------------
 # Yaw / rotation penalties
 # ---------------------------------------------------------------------------

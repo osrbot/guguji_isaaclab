@@ -354,10 +354,18 @@ class RewardsCfg:
     )
     knee_symmetry = RewTerm(
         func=mdp.knee_symmetry_penalty,
-        weight=-1.0,
+        weight=-2.0,
         params={
             "left_knee_name": "left_knee_pitch_joint",
             "right_knee_name": "right_knee_pitch_joint",
+        },
+    )
+    hip_symmetry = RewTerm(
+        func=mdp.hip_symmetry_penalty,
+        weight=-1.5,
+        params={
+            "left_hip_name": "left_hip_pitch_joint",
+            "right_hip_name": "right_hip_pitch_joint",
         },
     )
     feet_air_time = RewTerm(
