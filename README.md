@@ -101,7 +101,7 @@ The play script also exports the policy to `logs/.../exported/policy.pt` (TorchS
 cd ~/rlgpu_ws/IsaacLab
 
 ./isaaclab.sh -p -m tensorboard.main --logdir=logs/rsl_rl/guguji_flat
-‵‵‵
+```
 
 ## Project Structure
 

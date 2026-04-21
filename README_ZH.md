@@ -100,9 +100,8 @@ play 脚本运行结束后会自动将策略导出到 `logs/.../exported/policy.
 
 ```bash
 cd ~/rlgpu_ws/IsaacLab
-
 ./isaaclab.sh -p -m tensorboard.main --logdir=logs/rsl_rl/guguji_flat
-‵‵‵
+```
 
 ## 项目结构
 
