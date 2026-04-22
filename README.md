@@ -35,7 +35,7 @@ This extension provides four registered Gym environments:
 
 ## Requirements
 
-- Isaac Lab 2.1.0 with Isaac Sim 4.5.0
+- Isaac Lab 2.1.0 with Isaac Sim 4.5.0, refer to [Installation of Env](https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg?from=from_copylink)
 - `rsl-rl-lib >= 5.0` (bundled with the Isaac Lab installation above)
 - Python 3.10
 
@@ -50,7 +50,7 @@ cd guguji_simulation/
 git clone https://github.com/osrbot/guguji_isaaclab.git
 ```
 
-install guguji_isaaclab
+installation of guguji_isaaclab
 
 
 ```bash
@@ -77,7 +77,10 @@ cd ~/rlgpu_ws/IsaacLab
     --task=Isaac-Velocity-Flat-Guguji-v0 \
     --num_envs=4096 \
     --headless
+```
 
+```bash
+cd ~/rlgpu_ws/IsaacLab
 # Rough terrain — after flat terrain policy converges
 ./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
     --task=Isaac-Velocity-Rough-Guguji-v0 \
@@ -101,6 +104,7 @@ cd ~/rlgpu_ws/IsaacLab
 ```bash
 cd ~/rlgpu_ws/IsaacLab
 # Load a specific checkpoint
+
 ./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/play.py \
     --task=Isaac-Velocity-Flat-Guguji-Play-v0 \
     --num_envs=50 \
