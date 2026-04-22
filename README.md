@@ -44,8 +44,18 @@ This extension provides four registered Gym environments:
 Install Isaac Lab following the [official guide](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html), then install this extension:
 
 ```bash
+cd ~/Desktop
+git clone https://code.xturtle.cn/corvin_zhang/guguji_simulation.git
+cd guguji_simulation/
+git clone https://github.com/osrbot/guguji_isaaclab.git
+```
+
+install guguji_isaaclab
+
+
+```bash
 cd ~/rlgpu_ws/IsaacLab
-python -m pip install -e ~/Desktop/guguji_simulation/guguji_isaaclab/source/guguji_locomotion
+./isaaclab.sh -p -m pip install -e ~/Desktop/guguji_simulation/guguji_isaaclab/source/guguji_locomotion
 ```
 
 Verify the environments are registered:
@@ -86,7 +96,10 @@ cd ~/rlgpu_ws/IsaacLab
 ./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/play.py \
     --task=Isaac-Velocity-Flat-Guguji-Play-v0 \
     --num_envs=50
+```
 
+```bash
+cd ~/rlgpu_ws/IsaacLab
 # Load a specific checkpoint
 ./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/play.py \
     --task=Isaac-Velocity-Flat-Guguji-Play-v0 \
@@ -101,8 +114,12 @@ The play script also exports the policy to `logs/.../exported/policy.pt` (TorchS
 
 ```bash
 cd ~/rlgpu_ws/IsaacLab
-
 ./isaaclab.sh -p -m tensorboard.main --logdir=logs/rsl_rl/guguji_flat
+```
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p -m tensorboard.main --logdir=logs/rsl_rl/guguji_rough
 ```
 
 ## Project Structure
