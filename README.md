@@ -197,3 +197,6 @@ Key reference gait parameters (in `rough_env_cfg.py`):
 
 See [CHANGELOG.md](CHANGELOG.md).
 
+## Acknowledgements
+
+- https://code.xturtle.cn/corvin_zhang/guguji_simulation
