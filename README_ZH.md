@@ -196,3 +196,7 @@ guguji_isaaclab/
 ## 更新日志
 
 见 [CHANGELOG.md](CHANGELOG.md)。
+
+## 致谢
+
+- https://code.xturtle.cn/corvin_zhang/guguji_simulation
