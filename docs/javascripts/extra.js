@@ -81,9 +81,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const setupMobileDrawer = () => {
     const collapse = document.querySelector('.navbar-collapse');
-    const toggle = document.querySelector('.navbar-toggle');
+    const originalToggle = document.querySelector('.navbar-toggle');
     const body = document.body;
-    if (!collapse || !toggle) return;
+    if (!collapse || !originalToggle) return;
+
+    const toggle = originalToggle.cloneNode(true);
+    originalToggle.parentNode.replaceChild(toggle, originalToggle);
+    toggle.removeAttribute('data-toggle');
+    toggle.removeAttribute('data-target');
+    toggle.removeAttribute('href');
+    collapse.classList.remove('in');
+    collapse.setAttribute('aria-hidden', 'true');
 
     let overlay = document.querySelector('.gg-mobile-overlay');
     if (!overlay) {
@@ -92,43 +100,34 @@ document.addEventListener('DOMContentLoaded', () => {
       body.appendChild(overlay);
     }
 
-    const syncToggleMode = () => {
-      if (window.innerWidth < 992) {
-        toggle.removeAttribute('data-toggle');
-        toggle.removeAttribute('data-target');
-        toggle.removeAttribute('href');
-      }
-    };
+    const isMobile = () => window.innerWidth < 992;
 
     const closeDrawer = () => {
-      if (window.innerWidth >= 992) return;
-      collapse.classList.remove('in');
+      if (!isMobile()) return;
+      collapse.classList.remove('gg-drawer-open');
       body.classList.remove('gg-mobile-nav-open');
       toggle.setAttribute('aria-expanded', 'false');
+      collapse.setAttribute('aria-hidden', 'true');
     };
 
     const openDrawer = () => {
-      if (window.innerWidth >= 992) return;
-      collapse.classList.add('in');
+      if (!isMobile()) return;
+      collapse.classList.add('gg-drawer-open');
       body.classList.add('gg-mobile-nav-open');
       toggle.setAttribute('aria-expanded', 'true');
+      collapse.setAttribute('aria-hidden', 'false');
     };
 
-    syncToggleMode();
-
     toggle.addEventListener('click', (event) => {
-      if (window.innerWidth >= 992) return;
+      if (!isMobile()) return;
       event.preventDefault();
       event.stopPropagation();
-      if (typeof event.stopImmediatePropagation === 'function') {
-        event.stopImmediatePropagation();
-      }
-      if (body.classList.contains('gg-mobile-nav-open')) {
+      if (collapse.classList.contains('gg-drawer-open')) {
         closeDrawer();
       } else {
         openDrawer();
       }
-    }, true);
+    });
 
     overlay.addEventListener('click', closeDrawer);
 
@@ -139,11 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('resize', () => {
-      syncToggleMode();
-      if (window.innerWidth >= 992) {
+      if (!isMobile()) {
         body.classList.remove('gg-mobile-nav-open');
-        collapse.classList.remove('in');
+        collapse.classList.remove('gg-drawer-open');
         toggle.setAttribute('aria-expanded', 'false');
+        collapse.setAttribute('aria-hidden', 'false');
+      } else {
+        collapse.setAttribute('aria-hidden', collapse.classList.contains('gg-drawer-open') ? 'false' : 'true');
       }
     });
 
