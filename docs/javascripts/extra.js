@@ -95,8 +95,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMq = window.matchMedia('(max-width: 1100px)');
     const isMobile = () => mobileMq.matches;
 
+    const isDrawerOpen = () =>
+      collapse.classList.contains('show') || collapse.classList.contains('in');
+
     const syncState = () => {
-      const isOpen = isMobile() && collapse.classList.contains('in');
+      if (!isMobile()) {
+        body.classList.remove('gg-mobile-nav-open');
+        collapse.classList.remove('show', 'in');
+        collapse.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      const isOpen = isDrawerOpen();
       body.classList.toggle('gg-mobile-nav-open', isOpen);
       collapse.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
       toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -104,26 +115,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openDrawer = () => {
       if (!isMobile()) return;
-      collapse.classList.add('in');
+      collapse.classList.add('show', 'in');
       syncState();
     };
 
     const closeDrawer = () => {
-      collapse.classList.remove('in');
+      collapse.classList.remove('show', 'in');
       syncState();
     };
 
-    const toggleDrawer = (event) => {
+    toggle.addEventListener('click', (event) => {
       if (!isMobile()) return;
       event.preventDefault();
-      if (collapse.classList.contains('in')) {
+      event.stopPropagation();
+
+      if (isDrawerOpen()) {
         closeDrawer();
       } else {
         openDrawer();
       }
-    };
+    });
 
-    toggle.addEventListener('click', toggleDrawer);
     overlay.addEventListener('click', closeDrawer);
 
     document.querySelectorAll('.navbar-collapse a').forEach((anchor) => {
@@ -133,12 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    mobileMq.addEventListener('change', () => {
-      if (!isMobile()) {
-        collapse.classList.remove('in');
-      }
-      syncState();
-    });
+    const handleMqChange = () => syncState();
+    if (typeof mobileMq.addEventListener === 'function') {
+      mobileMq.addEventListener('change', handleMqChange);
+    } else if (typeof mobileMq.addListener === 'function') {
+      mobileMq.addListener(handleMqChange);
+    }
 
     window.addEventListener('resize', syncState);
     document.addEventListener('keydown', (event) => {
