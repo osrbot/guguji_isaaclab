@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle.removeAttribute('data-toggle');
     toggle.removeAttribute('data-target');
     toggle.removeAttribute('href');
-    collapse.classList.remove('in');
+    toggle.setAttribute('aria-expanded', 'false');
     collapse.setAttribute('aria-hidden', 'true');
 
     let overlay = document.querySelector('.gg-mobile-overlay');
@@ -104,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const closeDrawer = () => {
       if (!isMobile()) return;
-      collapse.classList.remove('gg-drawer-open');
       body.classList.remove('gg-mobile-nav-open');
       toggle.setAttribute('aria-expanded', 'false');
       collapse.setAttribute('aria-hidden', 'true');
@@ -112,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openDrawer = () => {
       if (!isMobile()) return;
-      collapse.classList.add('gg-drawer-open');
       body.classList.add('gg-mobile-nav-open');
       toggle.setAttribute('aria-expanded', 'true');
       collapse.setAttribute('aria-hidden', 'false');
@@ -122,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isMobile()) return;
       event.preventDefault();
       event.stopPropagation();
-      if (collapse.classList.contains('gg-drawer-open')) {
+      if (body.classList.contains('gg-mobile-nav-open')) {
         closeDrawer();
       } else {
         openDrawer();
@@ -140,11 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
       if (!isMobile()) {
         body.classList.remove('gg-mobile-nav-open');
-        collapse.classList.remove('gg-drawer-open');
         toggle.setAttribute('aria-expanded', 'false');
         collapse.setAttribute('aria-hidden', 'false');
       } else {
-        collapse.setAttribute('aria-hidden', collapse.classList.contains('gg-drawer-open') ? 'false' : 'true');
+        collapse.setAttribute('aria-hidden', body.classList.contains('gg-mobile-nav-open') ? 'false' : 'true');
       }
     });
 
