@@ -92,33 +92,38 @@ document.addEventListener('DOMContentLoaded', () => {
       body.appendChild(overlay);
     }
 
-    const isMobile = () => window.innerWidth < 992;
+    const mobileMq = window.matchMedia('(max-width: 1100px)');
+    const isMobile = () => mobileMq.matches;
 
     const syncState = () => {
-      if (!isMobile()) {
-        body.classList.remove('gg-mobile-nav-open');
-        collapse.setAttribute('aria-hidden', 'false');
-        return;
-      }
-      const isOpen = collapse.classList.contains('in');
+      const isOpen = isMobile() && collapse.classList.contains('in');
       body.classList.toggle('gg-mobile-nav-open', isOpen);
       collapse.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
       toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     };
 
-    const closeDrawer = () => {
+    const openDrawer = () => {
       if (!isMobile()) return;
+      collapse.classList.add('in');
+      syncState();
+    };
+
+    const closeDrawer = () => {
       collapse.classList.remove('in');
       syncState();
     };
 
-    toggle.addEventListener('click', () => {
+    const toggleDrawer = (event) => {
       if (!isMobile()) return;
-      requestAnimationFrame(syncState);
-      setTimeout(syncState, 20);
-      setTimeout(syncState, 220);
-    });
+      event.preventDefault();
+      if (collapse.classList.contains('in')) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    };
 
+    toggle.addEventListener('click', toggleDrawer);
     overlay.addEventListener('click', closeDrawer);
 
     document.querySelectorAll('.navbar-collapse a').forEach((anchor) => {
@@ -128,8 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    const observer = new MutationObserver(syncState);
-    observer.observe(collapse, { attributes: true, attributeFilter: ['class'] });
+    mobileMq.addEventListener('change', () => {
+      if (!isMobile()) {
+        collapse.classList.remove('in');
+      }
+      syncState();
+    });
 
     window.addEventListener('resize', syncState);
     document.addEventListener('keydown', (event) => {
