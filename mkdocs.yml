@@ -28,10 +28,6 @@ nav:
   - Training & Evaluation: training.md
   - Design Notes: design.md
   - Changelog: changelog.md
-  - 中文:
-      - 中文首页: zh/index.md
-      - 快速开始: zh/getting-started.md
-      - 训练与评估: zh/training.md
 
 markdown_extensions:
   - admonition
