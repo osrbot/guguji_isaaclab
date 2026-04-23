@@ -8,10 +8,6 @@ edit_uri: edit/main/docs/
 theme:
   name: mkdocs
   language: en
-  features:
-    - navigation.sections
-    - navigation.expand
-    - content.code.copy
 
 nav:
   - Home: index.md
