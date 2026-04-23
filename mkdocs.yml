@@ -5,9 +5,22 @@ repo_name: osrbot/guguji_isaaclab
 repo_url: https://github.com/osrbot/guguji_isaaclab
 edit_uri: edit/main/docs/
 
+extra:
+  seo:
+    keywords: Guguji, Isaac Lab, Isaac Sim, biped robot, locomotion, reinforcement learning, RSL-RL, sim-to-real
+    og_image: https://raw.githubusercontent.com/osrbot/guguji_isaaclab/main/img/guguji_velocity_flat.gif
+  alternate:
+    - name: English
+      link: /
+      lang: en
+    - name: 中文
+      link: /zh/
+      lang: zh-CN
+
 theme:
   name: mkdocs
   language: en
+  custom_dir: docs/overrides
 
 nav:
   - Home: index.md
@@ -15,6 +28,10 @@ nav:
   - Training & Evaluation: training.md
   - Design Notes: design.md
   - Changelog: changelog.md
+  - 中文:
+      - 中文首页: zh/index.md
+      - 快速开始: zh/getting-started.md
+      - 训练与评估: zh/training.md
 
 markdown_extensions:
   - admonition
