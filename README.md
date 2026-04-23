@@ -6,11 +6,15 @@
 [![Isaac Lab](https://img.shields.io/badge/IsaacLab-2.1.0-silver)](https://isaac-sim.github.io/IsaacLab)
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/license/mit)
+[![Website](https://img.shields.io/badge/docs-live-4f8cff)](https://osrbot.github.io/guguji_isaaclab/)
+[![中文文档](https://img.shields.io/badge/docs-%E4%B8%AD%E6%96%87-16a34a)](https://osrbot.github.io/guguji_isaaclab/zh/)
 
 Isaac Lab extension for training locomotion policies on the **Guguji** biped robot.
 Migrated from a Gazebo/ROS 2 + Stable-Baselines3 setup to Isaac Lab + RSL-RL for GPU-accelerated parallel training.
 
-For the Chinese guide, see [README_ZH.md](README_ZH.md).
+- Project website: <https://osrbot.github.io/guguji_isaaclab/>
+- Chinese docs: <https://osrbot.github.io/guguji_isaaclab/zh/>
+- For the Chinese README, see [README_ZH.md](README_ZH.md).
 
 ## Overview
 
