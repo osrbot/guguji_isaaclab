@@ -79,23 +79,67 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const improveMobileNav = () => {
+  const setupMobileDrawer = () => {
     const collapse = document.querySelector('.navbar-collapse');
     const toggle = document.querySelector('.navbar-toggle');
-    const navAnchors = document.querySelectorAll('.navbar-collapse a');
+    const body = document.body;
     if (!collapse || !toggle) return;
 
-    navAnchors.forEach((anchor) => {
+    let overlay = document.querySelector('.gg-mobile-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'gg-mobile-overlay';
+      body.appendChild(overlay);
+    }
+
+    const closeDrawer = () => {
+      if (window.innerWidth >= 992) return;
+      collapse.classList.remove('in');
+      body.classList.remove('gg-mobile-nav-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    };
+
+    const openDrawer = () => {
+      if (window.innerWidth >= 992) return;
+      collapse.classList.add('in');
+      body.classList.add('gg-mobile-nav-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    };
+
+    toggle.addEventListener('click', (event) => {
+      if (window.innerWidth >= 992) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (body.classList.contains('gg-mobile-nav-open')) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    });
+
+    overlay.addEventListener('click', closeDrawer);
+
+    document.querySelectorAll('.navbar-collapse a').forEach((anchor) => {
       anchor.addEventListener('click', () => {
-        if (window.innerWidth < 992 && collapse.classList.contains('in')) {
-          toggle.click();
-        }
+        closeDrawer();
       });
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 992) {
+        body.classList.remove('gg-mobile-nav-open');
+        collapse.classList.remove('in');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeDrawer();
     });
   };
 
   addHeroClickEffects();
   localizeNavbar();
   createLanguageSwitcher();
-  improveMobileNav();
+  setupMobileDrawer();
 });
