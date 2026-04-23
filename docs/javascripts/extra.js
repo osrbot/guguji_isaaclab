@@ -81,17 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const setupMobileDrawer = () => {
     const collapse = document.querySelector('.navbar-collapse');
-    const originalToggle = document.querySelector('.navbar-toggle');
+    const toggle = document.querySelector('.navbar-toggle');
     const body = document.body;
-    if (!collapse || !originalToggle) return;
-
-    const toggle = originalToggle.cloneNode(true);
-    originalToggle.parentNode.replaceChild(toggle, originalToggle);
-    toggle.removeAttribute('data-toggle');
-    toggle.removeAttribute('data-target');
-    toggle.removeAttribute('href');
-    toggle.setAttribute('aria-expanded', 'false');
-    collapse.setAttribute('aria-hidden', 'true');
+    if (!collapse || !toggle) return;
 
     let overlay = document.querySelector('.gg-mobile-overlay');
     if (!overlay) {
@@ -102,52 +94,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isMobile = () => window.innerWidth < 992;
 
+    const syncState = () => {
+      if (!isMobile()) {
+        body.classList.remove('gg-mobile-nav-open');
+        collapse.setAttribute('aria-hidden', 'false');
+        return;
+      }
+      const isOpen = collapse.classList.contains('in');
+      body.classList.toggle('gg-mobile-nav-open', isOpen);
+      collapse.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    };
+
     const closeDrawer = () => {
       if (!isMobile()) return;
-      body.classList.remove('gg-mobile-nav-open');
-      toggle.setAttribute('aria-expanded', 'false');
-      collapse.setAttribute('aria-hidden', 'true');
+      collapse.classList.remove('in');
+      syncState();
     };
 
-    const openDrawer = () => {
+    toggle.addEventListener('click', () => {
       if (!isMobile()) return;
-      body.classList.add('gg-mobile-nav-open');
-      toggle.setAttribute('aria-expanded', 'true');
-      collapse.setAttribute('aria-hidden', 'false');
-    };
-
-    toggle.addEventListener('click', (event) => {
-      if (!isMobile()) return;
-      event.preventDefault();
-      event.stopPropagation();
-      if (body.classList.contains('gg-mobile-nav-open')) {
-        closeDrawer();
-      } else {
-        openDrawer();
-      }
+      requestAnimationFrame(syncState);
+      setTimeout(syncState, 20);
+      setTimeout(syncState, 220);
     });
 
     overlay.addEventListener('click', closeDrawer);
 
     document.querySelectorAll('.navbar-collapse a').forEach((anchor) => {
       anchor.addEventListener('click', () => {
+        if (!isMobile()) return;
         closeDrawer();
       });
     });
 
-    window.addEventListener('resize', () => {
-      if (!isMobile()) {
-        body.classList.remove('gg-mobile-nav-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        collapse.setAttribute('aria-hidden', 'false');
-      } else {
-        collapse.setAttribute('aria-hidden', body.classList.contains('gg-mobile-nav-open') ? 'false' : 'true');
-      }
-    });
+    const observer = new MutationObserver(syncState);
+    observer.observe(collapse, { attributes: true, attributeFilter: ['class'] });
 
+    window.addEventListener('resize', syncState);
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') closeDrawer();
     });
+
+    syncState();
   };
 
   addHeroClickEffects();
