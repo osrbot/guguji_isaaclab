@@ -396,8 +396,8 @@ pre {
     visibility: hidden;
   }
 
-  .navbar-collapse.gg-drawer-open,
-  .navbar-collapse.collapse.gg-drawer-open {
+  body.gg-mobile-nav-open .navbar-collapse,
+  body.gg-mobile-nav-open .navbar-collapse.collapse {
     transform: translateX(0);
     visibility: visible;
   }
