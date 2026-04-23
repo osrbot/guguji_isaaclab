@@ -377,6 +377,7 @@ pre {
     text-overflow: ellipsis;
   }
 
+  .navbar-collapse,
   .navbar-collapse.collapse {
     display: block !important;
     position: fixed;
@@ -392,10 +393,13 @@ pre {
     z-index: 1039;
     overflow-y: auto;
     overscroll-behavior: contain;
+    visibility: hidden;
   }
 
-  .navbar-collapse.collapse.in {
+  .navbar-collapse.gg-drawer-open,
+  .navbar-collapse.collapse.gg-drawer-open {
     transform: translateX(0);
+    visibility: visible;
   }
 
   .navbar-collapse {
