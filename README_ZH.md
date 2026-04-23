@@ -6,11 +6,15 @@
 [![Isaac Lab](https://img.shields.io/badge/IsaacLab-2.1.0-silver)](https://isaac-sim.github.io/IsaacLab)
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/license/mit)
+[![网站](https://img.shields.io/badge/docs-live-4f8cff)](https://osrbot.github.io/guguji_isaaclab/)
+[![中文文档](https://img.shields.io/badge/docs-%E4%B8%AD%E6%96%87-16a34a)](https://osrbot.github.io/guguji_isaaclab/zh/)
 
 基于 Isaac Lab 的 **Guguji 双足机器人**运动控制策略训练扩展。
 从 Gazebo/ROS 2 + Stable-Baselines3 迁移而来，利用 Isaac Lab 的 GPU 并行仿真大幅提升训练速度。
 
-英文说明见 [README.md](README.md)
+- 项目网站：<https://osrbot.github.io/guguji_isaaclab/>
+- 中文文档：<https://osrbot.github.io/guguji_isaaclab/zh/>
+- 英文说明见 [README.md](README.md)
 
 ## 概述
 
