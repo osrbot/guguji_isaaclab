@@ -37,6 +37,33 @@ cd ~/rlgpu_ws/IsaacLab
 
 You should see the four Guguji locomotion environments registered successfully.
 
+## Preview the docs locally
+
+The website uses MkDocs.
+
+```bash
+python -m pip install -r requirements-docs.txt
+mkdocs serve
+```
+
+Then open `http://127.0.0.1:8000` in your browser.
+
+To produce a static build locally:
+
+```bash
+mkdocs build --strict
+```
+
+## Publish with GitHub Pages
+
+A GitHub Actions workflow is included at `.github/workflows/docs.yml`.
+
+To activate publishing in the repository settings:
+
+1. Open **Settings** → **Pages**.
+2. Set **Source** to **GitHub Actions**.
+3. Push to `main` after editing `docs/`, `mkdocs.yml`, or the workflow file.
+
 ## Recommended workflow
 
 1. Start with the flat-terrain task.
