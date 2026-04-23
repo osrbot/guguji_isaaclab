@@ -26,8 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const createLanguageSwitcher = () => {
+    const navbarCollapse = document.querySelector('.navbar-collapse');
     const navbar = document.querySelector('.navbar .container');
-    if (!navbar || navbar.querySelector('.gg-lang-switch')) return;
+    const mountPoint = navbarCollapse || navbar;
+    if (!mountPoint || mountPoint.querySelector('.gg-lang-switch')) return;
 
     const switcher = document.createElement('div');
     switcher.className = 'gg-lang-switch';
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     switcher.appendChild(en);
     switcher.appendChild(zh);
-    navbar.appendChild(switcher);
+    mountPoint.appendChild(switcher);
   };
 
   const localizeNavbar = () => {
@@ -77,7 +79,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const improveMobileNav = () => {
+    const collapse = document.querySelector('.navbar-collapse');
+    const toggle = document.querySelector('.navbar-toggle');
+    const navAnchors = document.querySelectorAll('.navbar-collapse a');
+    if (!collapse || !toggle) return;
+
+    navAnchors.forEach((anchor) => {
+      anchor.addEventListener('click', () => {
+        if (window.innerWidth < 992 && collapse.classList.contains('in')) {
+          toggle.click();
+        }
+      });
+    });
+  };
+
   addHeroClickEffects();
   localizeNavbar();
   createLanguageSwitcher();
+  improveMobileNav();
 });
