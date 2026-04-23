@@ -1,0 +1,35 @@
+site_name: Guguji Isaac Lab
+site_description: Isaac Lab extension for training locomotion policies on the Guguji biped robot.
+site_url: https://osrbot.github.io/guguji_isaaclab/
+repo_name: osrbot/guguji_isaaclab
+repo_url: https://github.com/osrbot/guguji_isaaclab
+edit_uri: edit/main/docs/
+
+theme:
+  name: mkdocs
+  language: en
+  features:
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Training & Evaluation: training.md
+  - Design Notes: design.md
+  - Changelog: changelog.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - fenced_code
+  - toc:
+      permalink: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
