@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block site_meta %}
+  {{ super() }}
+  <meta name="description" content="{{ config.site_description | e }}">
+  <meta name="keywords" content="{{ config.extra.seo.keywords | e }}">
+  <meta name="author" content="OSRBot">
+  <meta property="og:title" content="{% if page and page.title %}{{ page.title | e }} - {{ config.site_name | e }}{% else %}{{ config.site_name | e }}{% endif %}">
+  <meta property="og:description" content="{{ config.site_description | e }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ page.canonical_url or config.site_url }}">
+  <meta property="og:image" content="{{ config.extra.seo.og_image | e }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if page and page.title %}{{ page.title | e }} - {{ config.site_name | e }}{% else %}{{ config.site_name | e }}{% endif %}">
+  <meta name="twitter:description" content="{{ config.site_description | e }}">
+  <meta name="twitter:image" content="{{ config.extra.seo.og_image | e }}">
+  {% if config.extra.alternate %}
+    {% for alt in config.extra.alternate %}
+      <link rel="alternate" hreflang="{{ alt.lang }}" href="{{ config.site_url[:-1] if config.site_url.endswith('/') else config.site_url }}{{ alt.link }}">
+    {% endfor %}
+  {% endif %}
+{% endblock %}
