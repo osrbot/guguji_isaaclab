@@ -92,6 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
       body.appendChild(overlay);
     }
 
+    const syncToggleMode = () => {
+      if (window.innerWidth < 992) {
+        toggle.removeAttribute('data-toggle');
+        toggle.removeAttribute('data-target');
+        toggle.removeAttribute('href');
+      }
+    };
+
     const closeDrawer = () => {
       if (window.innerWidth >= 992) return;
       collapse.classList.remove('in');
@@ -106,16 +114,21 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.setAttribute('aria-expanded', 'true');
     };
 
+    syncToggleMode();
+
     toggle.addEventListener('click', (event) => {
       if (window.innerWidth >= 992) return;
       event.preventDefault();
       event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === 'function') {
+        event.stopImmediatePropagation();
+      }
       if (body.classList.contains('gg-mobile-nav-open')) {
         closeDrawer();
       } else {
         openDrawer();
       }
-    });
+    }, true);
 
     overlay.addEventListener('click', closeDrawer);
 
@@ -126,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('resize', () => {
+      syncToggleMode();
       if (window.innerWidth >= 992) {
         body.classList.remove('gg-mobile-nav-open');
         collapse.classList.remove('in');
