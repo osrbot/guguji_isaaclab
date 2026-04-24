@@ -20,13 +20,13 @@ from isaaclab_rl.rsl_rl import (
 
 @configclass
 class GugujiFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
-    num_steps_per_env = 24
-    max_iterations = 500
+    num_steps_per_env = 2048
+    max_iterations = 30000
     save_interval = 50
     experiment_name = "guguji_flat"
     empirical_normalization = False
+    clip_actions = 10.0          # prevent runaway action outputs
 
-    # Explicitly map actor and critic to the "policy" observation group
     obs_groups = {"actor": ["policy"], "critic": ["policy"]}
 
     actor = RslRlMLPModelCfg(
@@ -34,15 +34,15 @@ class GugujiFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         hidden_dims=[256, 256, 128],
         activation="elu",
         distribution_cfg=RslRlMLPModelCfg.GaussianDistributionCfg(
-            init_std=1.0,
-            std_type="log",  # log space: std = exp(param) > 0 always
+            init_std=0.1,        # was 1.0 — small init std prevents early divergence
+            std_type="log",
         ),
     )
     critic = RslRlMLPModelCfg(
         class_name="MLPModel",
         hidden_dims=[256, 256, 128],
         activation="elu",
-        distribution_cfg=None,  # deterministic critic
+        distribution_cfg=None,
     )
     algorithm = RslRlPpoAlgorithmCfg(
         value_loss_coef=0.5,
@@ -50,7 +50,7 @@ class GugujiFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         clip_param=0.15,
         entropy_coef=0.005,
         num_learning_epochs=5,
-        num_mini_batches=4,
+        num_mini_batches=32,     # 2048 envs × 2048 steps / 32 = 131k per minibatch
         learning_rate=6.0e-5,
         schedule="adaptive",
         gamma=0.99,
@@ -64,7 +64,7 @@ class GugujiFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
 class GugujiRoughPPORunnerCfg(GugujiFlatPPORunnerCfg):
     def __post_init__(self):
         super().__post_init__()
-        self.max_iterations = 1500
+        self.max_iterations = 5000
         self.experiment_name = "guguji_rough"
         self.actor.hidden_dims = [512, 256, 128]
         self.critic.hidden_dims = [512, 256, 128]

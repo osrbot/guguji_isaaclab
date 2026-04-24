@@ -65,7 +65,7 @@ class MySceneCfg(InteractiveSceneCfg):
     height_scanner = RayCasterCfg(
         prim_path="{ENV_REGEX_NS}/Robot/base_link",
         offset=RayCasterCfg.OffsetCfg(pos=(0.0, 0.0, 20.0)),
-        attach_yaw_only=True,
+        ray_alignment="yaw",
         pattern_cfg=patterns.GridPatternCfg(resolution=0.1, size=[1.6, 1.0]),
         debug_vis=False,
         mesh_prim_paths=["/World/ground"],
@@ -279,7 +279,7 @@ class EventCfg:
         func=mdp.reset_joints_by_scale,
         mode="reset",
         params={
-            "position_range": (0.85, 1.15),
+            "position_range": (1.0, 1.0),  # no joint perturbation at reset
             "velocity_range": (0.0, 0.0),
         },
     )
