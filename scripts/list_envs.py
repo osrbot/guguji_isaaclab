@@ -23,24 +23,28 @@ from prettytable import PrettyTable
 import guguji_locomotion.tasks  # noqa: F401
 
 
+def _fmt(obj) -> str:
+    """Return a short readable name for a class or string entry point."""
+    if isinstance(obj, type):
+        return f"{obj.__module__.split('.')[-1]}.{obj.__qualname__}"
+    return str(obj).split(":")[-1]
+
+
 def main():
-    """Print all environments registered in `isaac.lab_demo` extension."""
-    # print all the available environments
-    table = PrettyTable(["S. No.", "Task Name", "Entry Point", "Config"])
-    table.title = "Available Environments in Isaac Lab Template Extension"
-    # set alignment of table columns
+    """Print all environments registered in the guguji_locomotion extension."""
+    table = PrettyTable(["No.", "Task Name", "Entry Point", "Config"])
+    table.title = "Guguji Isaac Lab Environments"
     table.align["Task Name"] = "l"
     table.align["Entry Point"] = "l"
     table.align["Config"] = "l"
+    table.max_width["Entry Point"] = 40
+    table.max_width["Config"] = 40
 
-    # count of environments
     index = 0
-    # acquire all Isaac environments names
     for task_spec in gym.registry.values():
-        if "Template-" in task_spec.id:
-            # add details to table
-            table.add_row([index + 1, task_spec.id, task_spec.entry_point, task_spec.kwargs["env_cfg_entry_point"]])
-            # increment count
+        if "Guguji-" in task_spec.id:
+            cfg = task_spec.kwargs.get("env_cfg_entry_point", "")
+            table.add_row([index + 1, task_spec.id, _fmt(task_spec.entry_point), _fmt(cfg)])
             index += 1
 
     print(table)
