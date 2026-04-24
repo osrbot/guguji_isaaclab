@@ -2,6 +2,20 @@
 
 This page summarizes the most important recent changes. For the full history, see `CHANGELOG.md` in the repository root.
 
+## v0.7.0 · 2026-04-24
+
+### PPO training divergence fixes
+
+Five root causes of training instability were identified and resolved:
+
+- `init_std` 1.0 → **0.1** — old value caused ±0.08 rad per-step noise, short episodes, and std growing to 12+ during training
+- `num_steps_per_env` 24 → **2048** — 24 steps (0.48s) was shorter than one gait cycle (0.72s); GAE could not see a complete stride
+- `max_iterations` 500 → **30000** (flat), 1500 → **5000** (rough) — biped locomotion needs far more iterations than the template default
+- `clip_actions` None → **10.0** — unbounded outputs with large std immediately toppled the robot
+- `num_mini_batches` 4 → **32** — matches the larger rollout buffer
+- `reset_robot_joints position_range` (0.85, 1.15) → **(1.0, 1.0)** — scale-based perturbation is meaningless for near-zero joints
+- `RayCasterCfg`: `attach_yaw_only=True` → `ray_alignment="yaw"` (API update)
+
 ## v0.6.0 · 2026-04-24
 
 ### Housekeeping and docs refresh

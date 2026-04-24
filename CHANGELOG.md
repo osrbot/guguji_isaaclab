@@ -10,6 +10,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.7.0] - 2026-04-24
+
+### Fixed — PPO training divergence and rollout issues
+
+Five root causes of training instability were identified and resolved:
+
+| # | Parameter | Before | After | Reason |
+|---|---|---|---|---|
+| 1 | `init_std` | 1.0 | **0.1** | std=1.0 × scale=0.08 → ±0.08 rad noise per step; episodes too short for useful gradients; std grew to 12+ |
+| 2 | `num_steps_per_env` | 24 | **2048** | 24 × 0.02s = 0.48s < one gait cycle (0.72s); GAE could not see a complete stride |
+| 3 | `max_iterations` (flat) | 500 | **30000** | Biped locomotion requires far more iterations than the template default |
+| 4 | `max_iterations` (rough) | 1500 | **5000** | Same reason |
+| 5 | `clip_actions` | None | **10.0** | Unbounded outputs with large std immediately toppled the robot |
+| 6 | `num_mini_batches` | 4 | **32** | Matches the larger rollout buffer (2048 envs × 2048 steps) |
+| 7 | `reset_robot_joints position_range` | (0.85, 1.15) | **(1.0, 1.0)** | Scale-based perturbation is meaningless for near-zero joints; adds noise in early training |
+
+Also updated `RayCasterCfg` from deprecated `attach_yaw_only=True` to `ray_alignment="yaw"`.
+
+---
+
 ## [0.6.0] - 2026-04-24
 
 ### Fixed

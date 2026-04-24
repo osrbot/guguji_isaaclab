@@ -2,6 +2,20 @@
 
 这里汇总近期最重要的改动，完整历史请查看仓库根目录的 `CHANGELOG.md`。
 
+## v0.7.0 · 2026-04-24
+
+### PPO 训练发散问题修复
+
+定位并修复了五个导致训练不稳定的根本原因：
+
+- `init_std` 1.0 → **0.1** — 旧值导致每步 ±0.08 rad 噪声，episode 极短，std 在训练中涨到 12+
+- `num_steps_per_env` 24 → **2048** — 24 步（0.48s）短于一个步态周期（0.72s），GAE 看不到完整步态
+- `max_iterations` 500 → **30000**（平地），1500 → **5000**（粗糙地形）— 双足训练所需迭代数远超模板默认值
+- `clip_actions` None → **10.0** — 无裁剪时大 std 输出极端关节目标，直接打翻机器人
+- `num_mini_batches` 4 → **32** — 与更大的 rollout buffer 匹配
+- `reset_robot_joints position_range` (0.85, 1.15) → **(1.0, 1.0)** — 缩放扰动对近零关节无意义，早期训练增加不必要难度
+- `RayCasterCfg`：`attach_yaw_only=True` → `ray_alignment="yaw"`（API 更新）
+
 ## v0.6.0 · 2026-04-24
 
 ### 代码清理与文档更新
