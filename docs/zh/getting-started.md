@@ -4,14 +4,15 @@
 
 在安装本扩展前，请确保你已经具备：
 
-- Isaac Lab **2.1.0**
-- Isaac Sim **4.5.0**
+- Isaac Lab **Latest**
+- Isaac Sim **5.1.0**
 - Python **3.10**
 - 在 Isaac Lab 环境中可用的 `rsl-rl-lib >= 5.0`
 
 Isaac Lab 安装说明：
 
-- <https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
+- 官方文档：<https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
+- 内部安装笔记：<https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg>
 
 ## 克隆仓库
 

@@ -27,6 +27,7 @@ nav:
   - Getting Started: getting-started.md
   - Training & Evaluation: training.md
   - Design Notes: design.md
+  - Tested Environments: tested-environments.md
   - Changelog: changelog.md
 
 markdown_extensions:

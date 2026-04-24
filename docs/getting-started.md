@@ -4,14 +4,15 @@
 
 Before installing this extension, make sure you have:
 
-- Isaac Lab **2.1.0**
-- Isaac Sim **4.5.0**
+- Isaac Lab **Latest**
+- Isaac Sim **5.1.0**
 - Python **3.10**
 - `rsl-rl-lib >= 5.0` available through the Isaac Lab environment
 
-For Isaac Lab installation details, refer to the official guide:
+For Isaac Lab installation details, refer to:
 
-- <https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
+- Official guide: <https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
+- Internal setup notes (Chinese): <https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg>
 
 ## Clone the repository
 
