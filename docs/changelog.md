@@ -2,7 +2,19 @@
 
 This page summarizes the most important recent changes. For the full history, see `CHANGELOG.md` in the repository root.
 
-## 0.5.0 · 2026-04-19
+## v0.6.0 · 2026-04-24
+
+### Housekeeping and docs refresh
+
+This release cleaned up leftover template code and updated the documentation:
+
+- fixed `list_envs.py` table display — class entry points now render as `module.ClassName` with capped column widths,
+- removed the unused `anymal_d` task config (template scaffold, never used),
+- bumped Isaac Sim requirement to 5.1.0 and Isaac Lab to Latest,
+- added Feishu internal setup guide link to getting-started,
+- added a new Tested Environments page documenting the validated hardware and software stack.
+
+## v0.5.0 · 2026-04-19
 
 ### Gait quality improvements
 
@@ -21,7 +33,7 @@ Key updates included:
 
 It also increased reward targets for hip alternation and knee flexion, while making air-time rewards easier to trigger.
 
-## 0.4.0 · 2026-04-18
+## v0.4.0 · 2026-04-18
 
 ### Stability and symmetry fixes
 
@@ -38,7 +50,7 @@ Key updates included:
 - a new knee symmetry penalty,
 - stronger feet air-time encouragement.
 
-## 0.3.0 · 2026-04-18
+## v0.3.0 · 2026-04-18
 
 ### `play.py` compatibility and anti-circling reward updates
 
@@ -56,7 +68,7 @@ It also:
 - increased training iterations,
 - added a small entropy bonus.
 
-## 0.2.0 · 2026-04-16
+## v0.2.0 · 2026-04-16
 
 ### Core Guguji locomotion stack landed
 
@@ -69,7 +81,7 @@ Added:
 - gait phase observations,
 - velocity command curriculum.
 
-## 0.1.0 · 2026-04-16
+## v0.1.0 · 2026-04-16
 
 ### Repository bootstrap
 

@@ -10,6 +10,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.6.0] - 2026-04-24
+
+### Fixed
+
+- `scripts/list_envs.py`: table columns were unreadable — `env_cfg_entry_point` printed as `<class '...'>` and entry-point strings were truncated arbitrarily. Added `_fmt()` helper to render class objects as `module.ClassName`, set `max_width=40` on Entry Point and Config columns, and updated table title to match Guguji branding.
+
+### Removed
+
+- `config/anymal_d/`: leftover scaffold from `IsaacLabExtensionTemplate` (flat/rough env configs, PPO config, `__init__.py`). This project targets only the Guguji biped; the directory was dead code.
+
+### Docs
+
+- Updated Isaac Sim requirement `4.5.0 → 5.1.0` and Isaac Lab to `Latest` in both EN and ZH getting-started pages.
+- Added internal Feishu Isaac Lab setup guide link: <https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg>
+- Added `docs/tested-environments.md` (EN) and `docs/zh/tested-environments.md` (ZH) documenting the validated hardware/software stack and all four Guguji Gym environments.
+- Registered **Tested Environments** page in `mkdocs.yml` nav.
+
+---
+
 ## [0.5.0] - 2026-04-19
 
 ### Changed — 步态质量优化（膝盖抬高 + 交替迈步）
