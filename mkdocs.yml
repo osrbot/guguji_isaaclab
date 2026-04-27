@@ -24,10 +24,11 @@ theme:
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
-  - Training & Evaluation: training.md
-  - Design Notes: design.md
-  - Tested Environments: tested-environments.md
+  - Start: getting-started.md
+  - Train / Eval: training.md
+  - Design: design.md
+  - Envs: tested-environments.md
+  - Contributors: contributors.md
   - Changelog: changelog.md
 
 markdown_extensions:
