@@ -53,11 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.navbar-nav a');
     const map = {
       'Home': { text: '首页', href: '/guguji_isaaclab/zh/' },
-      'Getting Started': { text: '快速开始', href: '/guguji_isaaclab/zh/getting-started/' },
-      'Training & Evaluation': { text: '训练与评估', href: '/guguji_isaaclab/zh/training/' },
-      'Design Notes': { text: '设计说明', href: '/guguji_isaaclab/zh/design/' },
-      'Changelog': { text: '更新日志', href: '/guguji_isaaclab/zh/changelog/' },
+      'Start': { text: '开始', href: '/guguji_isaaclab/zh/getting-started/' },
+      'Train / Eval': { text: '训练评估', href: '/guguji_isaaclab/zh/training/' },
+      'Design': { text: '设计', href: '/guguji_isaaclab/zh/design/' },
+      'Envs': { text: '环境', href: '/guguji_isaaclab/zh/tested-environments/' },
+      'Contributors': { text: '贡献者', href: '/guguji_isaaclab/zh/contributors/' },
+      'Changelog': { text: '更新', href: '/guguji_isaaclab/zh/changelog/' },
       'Search': { text: '搜索' },
+      'Edit on osrbot/guguji_isaaclab': { text: '源码' },
+      'osrbot/guguji_isaaclab': { text: '源码' },
     };
 
     navLinks.forEach((link) => {
@@ -66,9 +70,17 @@ document.addEventListener('DOMContentLoaded', () => {
         link.parentElement?.remove();
         return;
       }
-      if (isZh && map[label]) {
-        link.textContent = map[label].text;
-        if (map[label].href) link.setAttribute('href', map[label].href);
+      if (map[label]) {
+        const next = isZh ? map[label].text : label;
+        link.textContent = next;
+        if (isZh && map[label].href) link.setAttribute('href', map[label].href);
+      }
+    });
+
+    document.querySelectorAll('.navbar-right a').forEach((link) => {
+      const label = link.textContent.trim();
+      if (/Edit on/i.test(label) || /osrbot\/guguji_isaaclab/.test(label)) {
+        link.textContent = isZh ? '源码' : 'GitHub';
       }
     });
 
