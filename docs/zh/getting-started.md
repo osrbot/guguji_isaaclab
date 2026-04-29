@@ -9,10 +9,9 @@
 - Python **3.10**
 - 在 Isaac Lab 环境中可用的 `rsl-rl-lib >= 5.0`
 
-Isaac Lab 安装说明：
+Isaac Lab 安装说明请参考官方文档：
 
-- 官方文档：<https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
-- 内部安装笔记：<https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg>
+- <https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
 
 ## Isaac Sim 5.1 + IsaacLab 环境安装
 
@@ -30,10 +29,8 @@ mkdir rlgpu_ws && cd rlgpu_ws
 curl -LJO https://downloads.isaacsim.nvidia.com/isaac-sim-standalone-5.1.0-linux-x86_64.zip
 unzip isaac-sim-standalone-5.1.0-linux-x86_64.zip -o -d IsaacSim
 
-# 2. 下载 IsaacLab、mujoco_warp、mjlab
+# 2. 下载 IsaacLab
 git clone https://github.com/isaac-sim/IsaacLab.git
-git clone https://github.com/google-deepmind/mujoco_warp.git
-git clone https://github.com/mujocolab/mjlab.git
 
 # 3. 做好 IsaacLab 的环境变量准备工作
 cd IsaacLab && ln -s ../IsaacSim/ _isaac_sim
@@ -62,10 +59,6 @@ cd ~/rlgpu_ws/IsaacLab/
 ./isaaclab.sh -p scripts/environments/list_envs.py
 ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-Ant-v0
 ```
-
-MuJoCo Warp 相关讨论：
-
-<https://github.com/google-deepmind/mujoco/discussions/2511>
 
 ### 本地资产下载安装
 
