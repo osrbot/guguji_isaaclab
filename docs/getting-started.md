@@ -14,6 +14,121 @@ For Isaac Lab installation details, refer to:
 - Official guide: <https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
 - Internal setup notes (Chinese): <https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg>
 
+## Isaac Sim 5.1 + IsaacLab Environment Installation
+
+### Prebuilt package
+
+Use the Isaac Sim 5.1 prebuilt package:
+
+<https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html>
+
+### Installation steps
+
+```bash
+# 1. Create a workspace and download Isaac Sim
+mkdir rlgpu_ws && cd rlgpu_ws
+curl -LJO https://downloads.isaacsim.nvidia.com/isaac-sim-standalone-5.1.0-linux-x86_64.zip
+unzip isaac-sim-standalone-5.1.0-linux-x86_64.zip -o -d IsaacSim
+
+# 2. Download IsaacLab, mujoco_warp, and mjlab
+git clone https://github.com/isaac-sim/IsaacLab.git
+git clone https://github.com/google-deepmind/mujoco_warp.git
+git clone https://github.com/mujocolab/mjlab.git
+
+# 3. Prepare IsaacLab environment variables
+cd IsaacLab && ln -s ../IsaacSim/ _isaac_sim
+
+cat <<'EOF' >> ~/.bashrc
+
+isaacsim () {
+    # Isaac Sim root directory
+    export ISAACSIM_PATH="${HOME}/rlgpu_ws/IsaacSim"
+    # Isaac Sim python executable
+    export ISAACSIM_PYTHON_EXE="${ISAACSIM_PATH}/python.sh"
+    export PATH=$PATH:${ISAACSIM_PATH}/kit/python/bin
+    source ${ISAACSIM_PATH}/setup_conda_env.sh
+}
+EOF
+
+source ~/.bashrc
+isaacsim
+
+# 4. Install IsaacLab with the Python environment from the Isaac Sim prebuilt package
+cd ~/rlgpu_ws/IsaacLab/
+./isaaclab.sh -i              # Install the required IsaacLab base libraries
+./isaaclab.sh --install all   # Install commonly used reinforcement learning libraries
+
+# 5. Verify the IsaacLab environment
+./isaaclab.sh -p scripts/environments/list_envs.py
+./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-Ant-v0
+```
+
+Related MuJoCo Warp discussion:
+
+<https://github.com/google-deepmind/mujoco/discussions/2511>
+
+### Download local assets
+
+Reference:
+
+<https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/install_faq.html#isaac-sim-setup-assets-content-pack>
+
+The assets are split into multiple zip parts. Merge the parts first; directly unzipping the individual parts can fail.
+
+```bash
+sudo apt install aria2
+cd ~/Downloads
+aria2c "https://downloads.isaacsim.nvidia.com/isaac-sim-assets-complete-5.1.0.001.zip"
+aria2c "https://downloads.isaacsim.nvidia.com/isaac-sim-assets-complete-5.1.0.002.zip"
+aria2c "https://downloads.isaacsim.nvidia.com/isaac-sim-assets-complete-5.1.0.003.zip"
+
+mkdir ~/isaacsim_assets
+cd ~/Downloads
+cat isaac-sim-assets-complete-5.1.0.001.zip isaac-sim-assets-complete-5.1.0.002.zip isaac-sim-assets-complete-5.1.0.003.zip > isaac-sim-assets-complete-5.1.0.zip
+unzip "isaac-sim-assets-complete-5.1.0.zip" -d ~/isaacsim_assets
+```
+
+### Configure the local asset path
+
+```bash
+cat <<EOF >> ~/rlgpu_ws/IsaacSim/apps/isaacsim.exp.base.kit
+[settings]
+persistent.isaac.asset_root.default = "/home/$USER/isaacsim_assets/Assets/Isaac/5.1"
+
+exts."isaacsim.gui.content_browser".folders = [
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Robots",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/People",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/IsaacLab",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Props",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Environments",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Materials",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Samples",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Sensors",
+]
+
+# Optional: Using Content Browser is recommended.
+exts."isaacsim.asset.browser".folders = [
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Robots",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/People",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/IsaacLab",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Props",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Environments",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Materials",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Samples",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Sensors",
+]
+EOF
+
+grep "/home/" ~/rlgpu_ws/IsaacSim/apps/isaacsim.exp.base.kit
+```
+
+### Test the configuration
+
+```bash
+cd ~/rlgpu_ws/IsaacSim
+./isaac-sim.sh --/persistent/isaac/asset_root/default="/home/$USER/isaacsim_assets/Assets/Isaac/5.1"
+```
+
 ## Clone the repository
 
 ```bash
@@ -29,41 +144,6 @@ git clone https://github.com/osrbot/guguji_isaaclab.git
 cd ~/rlgpu_ws/IsaacLab
 ./isaaclab.sh -p -m pip install -e ~/Desktop/guguji_simulation/guguji_isaaclab/source/guguji_locomotion
 ```
-
-## Verify environment registration
-
-```bash
-./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/list_envs.py
-```
-
-You should see the four Guguji locomotion environments registered successfully.
-
-## Preview the docs locally
-
-The website uses MkDocs.
-
-```bash
-python -m pip install -r requirements-docs.txt
-mkdocs serve
-```
-
-Then open `http://127.0.0.1:8000` in your browser.
-
-To produce a static build locally:
-
-```bash
-mkdocs build --strict
-```
-
-## Publish with GitHub Pages
-
-A GitHub Actions workflow is included at `.github/workflows/docs.yml`.
-
-To activate publishing in the repository settings:
-
-1. Open **Settings** → **Pages**.
-2. Set **Source** to **GitHub Actions**.
-3. Push to `main` after editing `docs/`, `mkdocs.yml`, or the workflow file.
 
 ## Recommended workflow
 
