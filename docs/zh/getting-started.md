@@ -14,6 +14,121 @@ Isaac Lab 安装说明：
 - 官方文档：<https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
 - 内部安装笔记：<https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg>
 
+## Isaac Sim 5.1 + IsaacLab 环境安装
+
+### 预编译安装包
+
+使用 Isaac Sim 5.1 预编译安装包：
+
+<https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html>
+
+### 安装过程
+
+```bash
+# 1. 创建 workspace 和下载 Isaac Sim
+mkdir rlgpu_ws && cd rlgpu_ws
+curl -LJO https://downloads.isaacsim.nvidia.com/isaac-sim-standalone-5.1.0-linux-x86_64.zip
+unzip isaac-sim-standalone-5.1.0-linux-x86_64.zip -o -d IsaacSim
+
+# 2. 下载 IsaacLab、mujoco_warp、mjlab
+git clone https://github.com/isaac-sim/IsaacLab.git
+git clone https://github.com/google-deepmind/mujoco_warp.git
+git clone https://github.com/mujocolab/mjlab.git
+
+# 3. 做好 IsaacLab 的环境变量准备工作
+cd IsaacLab && ln -s ../IsaacSim/ _isaac_sim
+
+cat <<'EOF' >> ~/.bashrc
+
+isaacsim () {
+    # Isaac Sim root directory
+    export ISAACSIM_PATH="${HOME}/rlgpu_ws/IsaacSim"
+    # Isaac Sim python executable
+    export ISAACSIM_PYTHON_EXE="${ISAACSIM_PATH}/python.sh"
+    export PATH=$PATH:${ISAACSIM_PATH}/kit/python/bin
+    source ${ISAACSIM_PATH}/setup_conda_env.sh
+}
+EOF
+
+source ~/.bashrc
+isaacsim
+
+# 4. 基于 Isaac Sim 预编译的 Python 环境安装 IsaacLab
+cd ~/rlgpu_ws/IsaacLab/
+./isaaclab.sh -i              # 安装必要的 IsaacLab 基础库
+./isaaclab.sh --install all   # 安装常用的强化学习库
+
+# 5. 验证 IsaacLab 环境
+./isaaclab.sh -p scripts/environments/list_envs.py
+./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-Ant-v0
+```
+
+MuJoCo Warp 相关讨论：
+
+<https://github.com/google-deepmind/mujoco/discussions/2511>
+
+### 本地资产下载安装
+
+参考文档：
+
+<https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/install_faq.html#isaac-sim-setup-assets-content-pack>
+
+注意 zip 文件需要先合并，直接分别解压分卷 zip 可能会报错。
+
+```bash
+sudo apt install aria2
+cd ~/Downloads
+aria2c "https://downloads.isaacsim.nvidia.com/isaac-sim-assets-complete-5.1.0.001.zip"
+aria2c "https://downloads.isaacsim.nvidia.com/isaac-sim-assets-complete-5.1.0.002.zip"
+aria2c "https://downloads.isaacsim.nvidia.com/isaac-sim-assets-complete-5.1.0.003.zip"
+
+mkdir ~/isaacsim_assets
+cd ~/Downloads
+cat isaac-sim-assets-complete-5.1.0.001.zip isaac-sim-assets-complete-5.1.0.002.zip isaac-sim-assets-complete-5.1.0.003.zip > isaac-sim-assets-complete-5.1.0.zip
+unzip "isaac-sim-assets-complete-5.1.0.zip" -d ~/isaacsim_assets
+```
+
+### 设置本地资产路径
+
+```bash
+cat <<EOF >> ~/rlgpu_ws/IsaacSim/apps/isaacsim.exp.base.kit
+[settings]
+persistent.isaac.asset_root.default = "/home/$USER/isaacsim_assets/Assets/Isaac/5.1"
+
+exts."isaacsim.gui.content_browser".folders = [
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Robots",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/People",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/IsaacLab",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Props",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Environments",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Materials",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Samples",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Sensors",
+]
+
+# Optional: Using Content Browser is recommended.
+exts."isaacsim.asset.browser".folders = [
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Robots",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/People",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/IsaacLab",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Props",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Environments",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Materials",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Samples",
+    "/home/$USER/isaacsim_assets/Assets/Isaac/5.1/Isaac/Sensors",
+]
+EOF
+
+grep "/home/" ~/rlgpu_ws/IsaacSim/apps/isaacsim.exp.base.kit
+```
+
+### 测试配置正确
+
+```bash
+cd ~/rlgpu_ws/IsaacSim
+./isaac-sim.sh --/persistent/isaac/asset_root/default="/home/$USER/isaacsim_assets/Assets/Isaac/5.1"
+```
+
 ## 克隆仓库
 
 ```bash
@@ -29,41 +144,6 @@ git clone https://github.com/osrbot/guguji_isaaclab.git
 cd ~/rlgpu_ws/IsaacLab
 ./isaaclab.sh -p -m pip install -e ~/Desktop/guguji_simulation/guguji_isaaclab/source/guguji_locomotion
 ```
-
-## 验证环境注册
-
-```bash
-./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/list_envs.py
-```
-
-如果安装正确，你应该能看到四个 Guguji 相关环境已经注册。
-
-## 本地预览网站
-
-文档网站基于 MkDocs。
-
-```bash
-python -m pip install -r requirements-docs.txt
-mkdocs serve
-```
-
-然后在浏览器中打开 `http://127.0.0.1:8000`。
-
-本地静态构建：
-
-```bash
-mkdocs build --strict
-```
-
-## 发布到 GitHub Pages
-
-仓库已经包含 `.github/workflows/docs.yml` 自动部署工作流。
-
-在仓库设置中还需要手动开启：
-
-1. 打开 **Settings** → **Pages**
-2. 将 **Source** 设置为 **GitHub Actions**
-3. 后续只要修改 `docs/`、`mkdocs.yml` 或 workflow 文件并推送到 `main`，网站就会自动发布
 
 ## 推荐使用顺序
 
