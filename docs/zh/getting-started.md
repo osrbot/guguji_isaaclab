@@ -15,6 +15,14 @@ Isaac Lab 安装说明请参考官方文档：
 
 ## Isaac Sim 5.1 + IsaacLab 环境安装
 
+!!! warning "请根据本机路径调整命令"
+    本文后续命令以 `~/rlgpu_ws/` 作为示例工作目录：
+
+    - Isaac Sim 示例路径：`~/rlgpu_ws/IsaacSim`
+    - IsaacLab 示例路径：`~/rlgpu_ws/IsaacLab`
+
+    如果你已经安装过 Isaac Sim 或 IsaacLab，且安装路径不同，请不要直接复制执行所有命令。运行每一行涉及路径的命令前，请先将示例路径替换为你本机的实际路径。
+
 ### 预编译安装包
 
 使用 Isaac Sim 5.1 预编译安装包：
