@@ -15,6 +15,9 @@ For Isaac Lab installation details, refer to the official guide:
 
 ## Isaac Sim 5.1 + IsaacLab Environment Installation
 
+!!! note
+    The commands below use `~/rlgpu_ws/` as the example workspace. If Isaac Sim or Isaac Lab is already installed on your machine, or if your installation path is different, replace paths such as `~/rlgpu_ws/IsaacSim`, `~/rlgpu_ws/IsaacLab`, and `_isaac_sim` with your actual local paths before running the later commands.
+
 ### Prebuilt package
 
 Use the Isaac Sim 5.1 prebuilt package:
