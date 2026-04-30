@@ -9,6 +9,11 @@
 - Python **3.10**
 - 在 Isaac Lab 环境中可用的 `rsl-rl-lib >= 5.0`
 
+<div class="gg-page-intro" markdown="1">
+<strong>你将完成什么</strong>
+<p>本页会带你完成 Isaac Sim 5.1、IsaacLab、本地资产配置，以及 Guguji IsaacLab 扩展安装。</p>
+</div>
+
 ## Isaac Sim 5.1 + IsaacLab 环境安装
 
 !!! warning "请根据本机路径调整命令"
@@ -21,13 +26,26 @@
 
 ### 预编译安装包
 
-使用 Isaac Sim 5.1 预编译安装包：
+使用 Isaac Sim 5.1 预编译安装包，并参考 IsaacLab 官方安装说明：
 
-<https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html>
-
-IsaacLab 安装说明请参考官方文档：
-
-<https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
+<div class="gg-link-stack">
+<a class="gg-doc-link-card" href="https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html" target="_blank" rel="noopener">
+  <span class="gg-doc-link-icon">↓</span>
+  <span>
+    <span class="gg-doc-link-title">Isaac Sim 5.1 预编译安装包</span>
+    <span class="gg-doc-link-url">https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html</span>
+  </span>
+  <span class="gg-doc-link-arrow">→</span>
+</a>
+<a class="gg-doc-link-card" href="https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html" target="_blank" rel="noopener">
+  <span class="gg-doc-link-icon">□</span>
+  <span>
+    <span class="gg-doc-link-title">IsaacLab 安装说明（官方文档）</span>
+    <span class="gg-doc-link-url">https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html</span>
+  </span>
+  <span class="gg-doc-link-arrow">→</span>
+</a>
+</div>
 
 ### 安装过程
 
