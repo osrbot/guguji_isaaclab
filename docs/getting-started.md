@@ -9,10 +9,6 @@ Before installing this extension, make sure you have:
 - Python **3.10**
 - `rsl-rl-lib >= 5.0` available through the Isaac Lab environment
 
-For Isaac Lab installation details, refer to the official guide:
-
-- <https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
-
 ## Isaac Sim 5.1 + IsaacLab Environment Installation
 
 !!! warning "Adjust commands to your local paths"
@@ -28,6 +24,10 @@ For Isaac Lab installation details, refer to the official guide:
 Use the Isaac Sim 5.1 prebuilt package:
 
 <https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html>
+
+For IsaacLab installation details, refer to the official guide:
+
+<https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
 
 ### Installation steps
 
