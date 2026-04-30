@@ -9,10 +9,6 @@
 - Python **3.10**
 - 在 Isaac Lab 环境中可用的 `rsl-rl-lib >= 5.0`
 
-Isaac Lab 安装说明请参考官方文档：
-
-- <https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
-
 ## Isaac Sim 5.1 + IsaacLab 环境安装
 
 !!! warning "请根据本机路径调整命令"
@@ -28,6 +24,10 @@ Isaac Lab 安装说明请参考官方文档：
 使用 Isaac Sim 5.1 预编译安装包：
 
 <https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html>
+
+IsaacLab 安装说明请参考官方文档：
+
+<https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
 
 ### 安装过程
 
