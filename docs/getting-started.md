@@ -9,6 +9,11 @@ Before installing this extension, make sure you have:
 - Python **3.10**
 - `rsl-rl-lib >= 5.0` available through the Isaac Lab environment
 
+<div class="gg-page-intro" markdown="1">
+<strong>What you will complete</strong>
+<p>This page guides you through Isaac Sim 5.1, IsaacLab, local asset setup, and the Guguji IsaacLab extension installation.</p>
+</div>
+
 ## Isaac Sim 5.1 + IsaacLab Environment Installation
 
 !!! warning "Adjust commands to your local paths"
@@ -21,13 +26,26 @@ Before installing this extension, make sure you have:
 
 ### Prebuilt package
 
-Use the Isaac Sim 5.1 prebuilt package:
+Use the Isaac Sim 5.1 prebuilt package and the official IsaacLab installation guide:
 
-<https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html>
-
-For IsaacLab installation details, refer to the official guide:
-
-<https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html>
+<div class="gg-link-stack">
+<a class="gg-doc-link-card" href="https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html" target="_blank" rel="noopener">
+  <span class="gg-doc-link-icon">↓</span>
+  <span>
+    <span class="gg-doc-link-title">Isaac Sim 5.1 prebuilt package</span>
+    <span class="gg-doc-link-url">https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/download.html</span>
+  </span>
+  <span class="gg-doc-link-arrow">→</span>
+</a>
+<a class="gg-doc-link-card" href="https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html" target="_blank" rel="noopener">
+  <span class="gg-doc-link-icon">□</span>
+  <span>
+    <span class="gg-doc-link-title">IsaacLab installation guide</span>
+    <span class="gg-doc-link-url">https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html</span>
+  </span>
+  <span class="gg-doc-link-arrow">→</span>
+</a>
+</div>
 
 ### Installation steps
 
