@@ -60,8 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
       'Contributors': { text: '贡献者', href: '/guguji_isaaclab/zh/contributors/' },
       'Changelog': { text: '更新', href: '/guguji_isaaclab/zh/changelog/' },
       'Search': { text: '搜索' },
-      'Edit on osrbot/guguji_isaaclab': { text: '源码' },
-      'osrbot/guguji_isaaclab': { text: '源码' },
+      'Edit on GitHub': { text: '编辑' },
+      'Edit on osrbot/guguji_isaaclab': { text: '编辑' },
+      'osrbot/guguji_isaaclab': { text: '编辑' },
+      'GitHub': { text: '编辑' },
     };
 
     navLinks.forEach((link) => {
@@ -79,15 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.navbar-right a').forEach((link) => {
       const label = link.textContent.trim();
-      if (/Edit on/i.test(label) || /osrbot\/guguji_isaaclab/.test(label)) {
-        link.textContent = isZh ? '源码' : 'GitHub';
+      if (/Edit on/i.test(label) || /osrbot\/guguji_isaaclab/.test(label) || label === 'GitHub') {
+        link.textContent = isZh ? '编辑' : 'Edit';
       }
     });
 
     const brand = document.querySelector('.navbar-brand');
-    if (brand && isZh) {
-      brand.textContent = 'Guguji Isaac Lab';
-      brand.setAttribute('href', '/guguji_isaaclab/zh/');
+    if (brand) {
+      brand.textContent = 'Guguji';
+      if (isZh) brand.setAttribute('href', '/guguji_isaaclab/zh/');
     }
   };
 
