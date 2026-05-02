@@ -2,6 +2,15 @@
 
 This page summarizes the most important recent changes. For the full history, see `CHANGELOG.md` in the repository root.
 
+## v0.8.0 · 2026-05-02
+
+### README and docs refresh
+
+- Bumped Isaac Sim to 5.1.0 and Isaac Lab to Latest in badges and requirements.
+- Added a **Fine-tuning from a checkpoint** section covering `--resume True`, specific run/checkpoint loading, and cross-task transfer (flat → rough).
+- Added a **Star History** chart to both READMEs.
+- Mirrored all changes into the Chinese README and docs.
+
 ## v0.7.0 · 2026-04-24
 
 ### PPO training divergence fixes

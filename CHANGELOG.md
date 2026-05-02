@@ -10,6 +10,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.8.0] - 2026-05-02
+
+### Docs
+
+- README.md / README_ZH.md: bumped Isaac Sim badge `4.5.0 → 5.1.0`, Isaac Lab `2.1.0 → Latest`.
+- Added **Fine-tuning from a checkpoint** section (EN + ZH) to both READMEs and `docs/training.md` / `docs/zh/training.md`, covering three scenarios:
+  - `--resume True` — resume from the latest checkpoint in the latest run
+  - `--load_run` + `--checkpoint` — resume from a specific run and file
+  - cross-task transfer (flat → rough terrain)
+- Added **Star History** chart (star-history.com SVG API) to both READMEs.
+
+---
+
 ## [0.7.0] - 2026-04-24
 
 ### Fixed — PPO training divergence and rollout issues
