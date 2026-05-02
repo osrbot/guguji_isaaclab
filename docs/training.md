@@ -46,6 +46,48 @@ cd ~/rlgpu_ws/IsaacLab
   --checkpoint=model_19999.pt
 ```
 
+## Fine-tuning from a checkpoint
+
+Resume training from an existing checkpoint — useful for continuing an interrupted run or fine-tuning a converged policy after adjusting reward weights.
+
+**Resume from the latest checkpoint in the latest run:**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+  --task=Isaac-Velocity-Flat-Guguji-v0 \
+  --num_envs=4096 \
+  --headless \
+  --resume True
+```
+
+**Resume from a specific run and checkpoint:**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+  --task=Isaac-Velocity-Flat-Guguji-v0 \
+  --num_envs=4096 \
+  --headless \
+  --load_run=2026-04-17_15-33-29 \
+  --checkpoint=model_29999.pt
+```
+
+**Transfer flat policy to rough terrain (cross-task fine-tuning):**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+  --task=Isaac-Velocity-Rough-Guguji-v0 \
+  --num_envs=2048 \
+  --headless \
+  --load_run=2026-04-17_15-33-29 \
+  --checkpoint=model_29999.pt
+```
+
+!!! tip
+    Run `ls logs/rsl_rl/guguji_flat/` to list available runs and find the timestamp you want to resume from.
+
 ## Logging and artifacts
 
 Training logs and checkpoints are written to:

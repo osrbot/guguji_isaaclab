@@ -46,6 +46,48 @@ cd ~/rlgpu_ws/IsaacLab
   --checkpoint=model_19999.pt
 ```
 
+## 微调 / 继续训练
+
+在已有良好模型的基础上继续训练——适用于中断后续训练、或在收敛策略上调整奖励权重后微调。
+
+**从最新 run 的最新 checkpoint 续训：**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+  --task=Isaac-Velocity-Flat-Guguji-v0 \
+  --num_envs=4096 \
+  --headless \
+  --resume True
+```
+
+**指定 run 和 checkpoint 文件续训：**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+  --task=Isaac-Velocity-Flat-Guguji-v0 \
+  --num_envs=4096 \
+  --headless \
+  --load_run=2026-04-17_15-33-29 \
+  --checkpoint=model_29999.pt
+```
+
+**平地策略迁移到粗糙地形（跨任务微调）：**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+  --task=Isaac-Velocity-Rough-Guguji-v0 \
+  --num_envs=2048 \
+  --headless \
+  --load_run=2026-04-17_15-33-29 \
+  --checkpoint=model_29999.pt
+```
+
+!!! tip
+    运行 `ls logs/rsl_rl/guguji_flat/` 可列出所有可用 run，找到要续训的时间戳。
+
 ## 输出产物
 
 训练日志与模型文件位于：

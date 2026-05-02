@@ -2,8 +2,8 @@
 
 ![](./img/guguji_velocity_flat.gif)
 
-[![IsaacSim](https://img.shields.io/badge/IsaacSim-4.5.0-silver.svg)](https://docs.omniverse.nvidia.com/isaacsim/latest/overview.html)
-[![Isaac Lab](https://img.shields.io/badge/IsaacLab-2.1.0-silver)](https://isaac-sim.github.io/IsaacLab)
+[![IsaacSim](https://img.shields.io/badge/IsaacSim-5.1.0-silver.svg)](https://docs.omniverse.nvidia.com/isaacsim/latest/overview.html)
+[![Isaac Lab](https://img.shields.io/badge/IsaacLab-Latest-silver)](https://isaac-sim.github.io/IsaacLab)
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/license/mit)
 [![网站](https://img.shields.io/badge/docs-live-4f8cff)](https://osrbot.github.io/guguji_isaaclab/)
@@ -39,7 +39,7 @@
 
 ## 环境要求
 
-- Isaac Lab 2.1.0 + Isaac Sim 4.5.0, 参考[环境安装](https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg?from=from_copylink)
+- Isaac Lab **Latest** + Isaac Sim **5.1.0**, 参考[环境安装](https://osrbotai.feishu.cn/wiki/QDj5w31Ynil8rYkyBNUc6tIVnwg?from=from_copylink)
 - `rsl-rl-lib >= 5.0`（随 Isaac Lab 安装包附带）
 - Python 3.10
 
@@ -92,6 +92,47 @@ cd ~/rlgpu_ws/IsaacLab
 ```
 
 训练日志和模型检查点保存在 `logs/rsl_rl/<experiment_name>/<timestamp>/` 目录下。
+
+## 微调 / 继续训练
+
+在已有良好模型的基础上继续训练——适用于中断后续训练、或在收敛策略上调整奖励权重后微调。
+
+**从最新 run 的最新 checkpoint 续训（最常用）：**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+    --task=Isaac-Velocity-Flat-Guguji-v0 \
+    --num_envs=4096 \
+    --headless \
+    --resume True
+```
+
+**指定 run 和 checkpoint 文件续训：**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+    --task=Isaac-Velocity-Flat-Guguji-v0 \
+    --num_envs=4096 \
+    --headless \
+    --load_run=2026-04-17_15-33-29 \
+    --checkpoint=model_29999.pt
+```
+
+**平地策略迁移到粗糙地形（跨任务微调）：**
+
+```bash
+cd ~/rlgpu_ws/IsaacLab
+./isaaclab.sh -p ~/Desktop/guguji_simulation/guguji_isaaclab/scripts/rsl_rl/train.py \
+    --task=Isaac-Velocity-Rough-Guguji-v0 \
+    --num_envs=2048 \
+    --headless \
+    --load_run=2026-04-17_15-33-29 \
+    --checkpoint=model_29999.pt
+```
+
+> 检查点存放在 `logs/rsl_rl/<experiment_name>/` 下，运行 `ls logs/rsl_rl/guguji_flat/` 可查看所有可用 run。
 
 ## 评估
 
@@ -200,6 +241,10 @@ guguji_isaaclab/
 ## 更新日志
 
 见 [CHANGELOG.md](CHANGELOG.md)。
+
+## Star 增长趋势
+
+[![Star History Chart](https://api.star-history.com/svg?repos=osrbot/guguji_isaaclab&type=Date)](https://star-history.com/#osrbot/guguji_isaaclab&Date)
 
 ## 致谢
 
