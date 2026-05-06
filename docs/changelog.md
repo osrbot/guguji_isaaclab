@@ -2,6 +2,19 @@
 
 This page summarizes the most important recent changes. For the full history, see `CHANGELOG.md` in the repository root.
 
+## v0.9.0 · 2026-05-06
+
+### Reward hardening — sim-to-real robustness
+
+Benchmarked against agibot_x1_train and unitree_rl_lab; six gaps were closed:
+
+- **Velocity tracking moved to yaw frame** — body-frame x velocity tilts with the robot; yaw-frame stays horizontal regardless of roll/pitch.
+- `joint_pos_limits` weight **-0.05 → -2.0** — previous weight was 40× weaker than comparable projects, allowing frequent limit collisions that damage real hardware.
+- `action_rate` weight **-0.004 → -0.03** — reduces joint chatter and motor heating.
+- Added `lin_vel_z` **(−1.5)** — penalizes vertical bouncing; all three reference projects include this.
+- Added `ang_vel_xy` **(−0.1)** — penalizes roll/pitch angular velocity; previous design only penalized yaw.
+- Added `feet_slide` **(−0.1)** — penalizes horizontal foot velocity during contact, closing a common sim-to-real gap.
+
 ## v0.8.0 · 2026-05-02
 
 ### README and docs refresh
