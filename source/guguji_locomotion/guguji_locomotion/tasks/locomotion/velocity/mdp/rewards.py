@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.sensors import ContactSensor
+from isaaclab.utils.math import quat_apply_inverse, yaw_quat
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
@@ -131,8 +132,66 @@ def stall_penalty(
 
 
 # ---------------------------------------------------------------------------
-# Posture
+# Velocity tracking — yaw frame variants
 # ---------------------------------------------------------------------------
+
+def _vel_yaw_x(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Return the x-axis velocity in the yaw-aligned (gravity-aligned) frame.
+
+    Unlike body frame, yaw frame removes roll/pitch from the rotation so the
+    x-axis stays horizontal even when the robot tilts.
+    """
+    asset = env.scene[asset_cfg.name]
+    vel_yaw = quat_apply_inverse(yaw_quat(asset.data.root_quat_w), asset.data.root_lin_vel_w[:, :3])
+    return vel_yaw[:, 0]
+
+
+def track_lin_vel_x_yaw_frame_exp(
+    env: ManagerBasedRLEnv,
+    command_name: str,
+    std: float,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Exponential reward for tracking commanded forward velocity in yaw frame."""
+    cmd_x = env.command_manager.get_command(command_name)[:, 0]
+    vel_x = _vel_yaw_x(env, asset_cfg)
+    return torch.exp(-((vel_x - cmd_x) ** 2) / (2.0 * std ** 2))
+
+
+def forward_progress_yaw_frame(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Reward positive forward displacement per step in yaw frame."""
+    return torch.clamp(_vel_yaw_x(env, asset_cfg), min=0.0)
+
+
+def backward_velocity_penalty_yaw_frame(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Penalty for moving backward in yaw frame (positive value, weight should be negative)."""
+    return torch.clamp(-_vel_yaw_x(env, asset_cfg), min=0.0)
+
+
+def stall_penalty_yaw_frame(
+    env: ManagerBasedRLEnv,
+    command_name: str,
+    threshold: float,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Penalty when yaw-frame forward velocity is below threshold while a command is active."""
+    cmd_x = env.command_manager.get_command(command_name)[:, 0]
+    vel_x = _vel_yaw_x(env, asset_cfg)
+    positive_vel = torch.clamp(vel_x, min=0.0)
+    penalty = torch.clamp(threshold - positive_vel, min=0.0)
+    return penalty * (cmd_x > 0.01).float()
+
+
+
 
 def upright_reward(
     env: ManagerBasedRLEnv,
@@ -279,9 +338,29 @@ def ang_vel_z_l2(
     return torch.square(asset.data.root_ang_vel_b[:, 2])
 
 
-# ---------------------------------------------------------------------------
-# Termination helpers (used as termination terms, not rewards)
-# ---------------------------------------------------------------------------
+def feet_slide(
+    env: ManagerBasedRLEnv,
+    sensor_cfg: SceneEntityCfg,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Penalize feet sliding on the ground during contact.
+
+    Only penalizes when the foot is in contact, preventing the policy from
+    learning to drag feet instead of lifting them.
+    """
+    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+    contacts = (
+        contact_sensor.data.net_forces_w_history[:, :, sensor_cfg.body_ids, :]
+        .norm(dim=-1)
+        .max(dim=1)[0]
+        > 1.0
+    )
+    asset = env.scene[asset_cfg.name]
+    body_vel = asset.data.body_lin_vel_w[:, asset_cfg.body_ids, :2]
+    return torch.sum(body_vel.norm(dim=-1) * contacts, dim=1)
+
+
+
 
 def base_height_below_threshold(
     env: ManagerBasedRLEnv,

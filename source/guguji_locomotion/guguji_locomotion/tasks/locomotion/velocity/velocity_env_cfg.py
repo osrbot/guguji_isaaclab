@@ -312,12 +312,12 @@ class RewardsCfg:
 
     # -- task
     track_lin_vel_x_exp = RewTerm(
-        func=mdp.track_lin_vel_x_exp,
+        func=mdp.track_lin_vel_x_yaw_frame_exp,
         weight=4.8,
         params={"command_name": "base_velocity", "std": 0.10},
     )
     forward_progress = RewTerm(
-        func=mdp.forward_progress,
+        func=mdp.forward_progress_yaw_frame,
         weight=6.0,
         params={},
     )
@@ -379,13 +379,15 @@ class RewardsCfg:
     )
 
     # -- penalties
-    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.004)
-    joint_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=-0.05)
+    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.03)
+    joint_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=-2.0)
     lateral_velocity = RewTerm(func=mdp.lin_vel_y_l2, weight=-0.3)
     yaw_rate = RewTerm(func=mdp.ang_vel_z_l2, weight=-0.5)
-    backward_velocity = RewTerm(func=mdp.backward_velocity_penalty, weight=-2.8)
+    ang_vel_xy = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.1)
+    lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-1.5)
+    backward_velocity = RewTerm(func=mdp.backward_velocity_penalty_yaw_frame, weight=-2.8)
     stall_penalty = RewTerm(
-        func=mdp.stall_penalty,
+        func=mdp.stall_penalty_yaw_frame,
         weight=-4.6,
         params={"command_name": "base_velocity", "threshold": 0.10},
     )
@@ -396,6 +398,11 @@ class RewardsCfg:
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*knee.*"),
             "threshold": 1.0,
         },
+    )
+    feet_slide = RewTerm(
+        func=mdp.feet_slide,
+        weight=-0.1,
+        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_link")},
     )
 
 
