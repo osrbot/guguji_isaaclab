@@ -10,6 +10,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.9.0] - 2026-05-06
+
+### Changed — reward hardening based on agibot_x1_train / unitree_rl_lab benchmarking
+
+- **Velocity tracking moved to yaw frame** (`track_lin_vel_x_yaw_frame_exp`, `forward_progress_yaw_frame`, `backward_velocity_penalty_yaw_frame`, `stall_penalty_yaw_frame`). Body-frame x velocity tilts with the robot; yaw-frame velocity stays horizontal regardless of roll/pitch, producing correct reward signals during stumbles.
+- `joint_pos_limits` weight `-0.05 → -2.0`. Previous weight was 40× weaker than comparable projects, allowing frequent limit collisions that damage real hardware.
+- `action_rate` weight `-0.004 → -0.03`. Reduces joint chatter and motor heating on real hardware.
+
+### Added — missing stability penalties
+
+- `lin_vel_z` (weight -1.5): penalizes vertical bouncing. All three reference projects include this; without it the policy can learn to bounce rather than walk.
+- `ang_vel_xy` (weight -0.1): penalizes roll and pitch angular velocity. The previous design only penalized yaw, allowing large body sway.
+- `feet_slide` (weight -0.1): penalizes horizontal foot velocity during ground contact, closing a common sim-to-real gap where the policy drags feet instead of lifting them.
+
+### Docs
+
+- Updated reward tables in `README.md`, `README_ZH.md`, and `docs/design.md` to reflect new weights and terms.
+- Added "Hardening reward design against sim-to-real failure modes" section to `docs/design.md`.
+
+---
+
 ## [0.8.0] - 2026-05-02
 
 ### Docs

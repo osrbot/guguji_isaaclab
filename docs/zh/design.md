@@ -6,8 +6,8 @@
 
 | 奖励项 | 权重 | 作用 |
 |---|---:|---|
-| `track_lin_vel_x_exp` | +4.8 | 跟踪前向速度指令 |
-| `forward_progress` | +6.0 | 奖励真实前进位移 |
+| `track_lin_vel_x_exp` | +4.8 | 跟踪前向速度指令（yaw frame） |
+| `forward_progress` | +6.0 | 奖励真实前进位移（yaw frame） |
 | `alive_bonus` | +0.6 | 保持 episode 存活 |
 | `upright` | +1.6 | 保持机体直立 |
 | `height` | +0.9 | 维持躯干高度 |
@@ -15,13 +15,17 @@
 | `knee_flexion` | +0.8 | 鼓励足够的抬膝 |
 | `feet_air_time` | +1.5 | 奖励脚离地时间 |
 | `yaw_rate` | -0.5 | 抑制绕圈 |
+| `ang_vel_xy` | -0.1 | 惩罚翻滚/俯仰角速度（躯干晃动） |
+| `lin_vel_z` | -1.5 | 惩罚垂直弹跳 |
 | `lateral_velocity` | -0.3 | 抑制侧向漂移 |
-| `knee_symmetry` | -1.0 | 抑制跛行式不对称 |
-| `backward_velocity` | -2.8 | 惩罚后退 |
-| `stall_penalty` | -4.6 | 有运动指令时惩罚原地不动 |
-| `action_rate` | -0.004 | 平滑动作 |
-| `joint_pos_limits` | -0.05 | 避免触碰关节限位 |
+| `knee_symmetry` | -2.0 | 抑制跛行式不对称 |
+| `hip_symmetry` | -1.5 | 惩罚髋关节非反相运动 |
+| `backward_velocity` | -2.8 | 惩罚后退（yaw frame） |
+| `stall_penalty` | -4.6 | 有运动指令时惩罚原地不动（yaw frame） |
+| `action_rate` | -0.03 | 平滑动作 |
+| `joint_pos_limits` | -2.0 | 避免触碰关节限位 |
 | `undesired_knee_contacts` | -1.0 | 避免膝盖触地 |
+| `feet_slide` | -0.1 | 惩罚接触时脚部滑动 |
 
 ## 为什么采用参考步态
 
@@ -69,7 +73,18 @@
 - 提高 `feet_air_time`
 - 增大参考步态摆幅
 
-### 3. 适配较新的 `rsl-rl`
+### 3. 对标成熟项目，强化 sim-to-real 鲁棒性
+
+对比 agibot_x1_train 和 unitree_rl_lab 后发现若干设计缺口：
+
+- **速度跟踪改为 yaw frame**。body-frame 前向速度会随机器人倾斜而偏转，在摔倒过程中产生错误的奖励信号。yaw frame 只保留偏航旋转，消除 roll/pitch 影响，信号始终水平。
+- **`joint_pos_limits` 权重 -0.05 → -2.0**。原权重比同类项目低 40 倍，关节频繁撞限位会损坏实机执行器。
+- **新增 `lin_vel_z`（-1.5）**。缺少此项时策略可能学会弹跳代替行走，三个参考项目均有此惩罚。
+- **新增 `ang_vel_xy`（-0.1）**。原设计只惩罚偏航角速度，不惩罚翻滚/俯仰，允许躯干大幅晃动。
+- **`action_rate` 权重 -0.004 → -0.03**。减少关节抖动，降低实机电机发热。
+- **新增 `feet_slide`（-0.1）**。惩罚接触时脚的水平速度，防止策略学会拖脚而非抬脚。
+
+### 4. 适配较新的 `rsl-rl`
 
 项目还更新了 actor 分布配置与策略导出流程，以适配 `rsl-rl >= 5.0`，避免旧参数导致训练崩溃或导出失败。
 

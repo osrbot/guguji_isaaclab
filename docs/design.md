@@ -6,8 +6,8 @@ The locomotion reward balances forward progress with posture quality and gait re
 
 | Term | Weight | Purpose |
 |---|---:|---|
-| `track_lin_vel_x_exp` | +4.8 | Track commanded forward velocity |
-| `forward_progress` | +6.0 | Reward actual forward motion |
+| `track_lin_vel_x_exp` | +4.8 | Track commanded forward velocity (yaw frame) |
+| `forward_progress` | +6.0 | Reward actual forward motion (yaw frame) |
 | `alive_bonus` | +0.6 | Keep the episode alive |
 | `upright` | +1.6 | Maintain torso stability |
 | `height` | +0.9 | Hold a consistent base height |
@@ -15,13 +15,17 @@ The locomotion reward balances forward progress with posture quality and gait re
 | `knee_flexion` | +0.8 | Maintain meaningful knee lift |
 | `feet_air_time` | +1.5 | Reward feet leaving the ground |
 | `yaw_rate` | -0.5 | Penalize spinning |
+| `ang_vel_xy` | -0.1 | Penalize roll/pitch angular velocity |
+| `lin_vel_z` | -1.5 | Penalize vertical bouncing |
 | `lateral_velocity` | -0.3 | Penalize sideways drift |
-| `knee_symmetry` | -1.0 | Penalize limping asymmetry |
-| `backward_velocity` | -2.8 | Penalize backward motion |
-| `stall_penalty` | -4.6 | Penalize standing still under a move command |
-| `action_rate` | -0.004 | Smooth actions |
-| `joint_pos_limits` | -0.05 | Stay within joint limits |
+| `knee_symmetry` | -2.0 | Penalize limping asymmetry |
+| `hip_symmetry` | -1.5 | Penalize non-antiphase hip motion |
+| `backward_velocity` | -2.8 | Penalize backward motion (yaw frame) |
+| `stall_penalty` | -4.6 | Penalize standing still under a move command (yaw frame) |
+| `action_rate` | -0.03 | Smooth actions |
+| `joint_pos_limits` | -2.0 | Stay within joint limits |
 | `undesired_knee_contacts` | -1.0 | Discourage knee-ground collisions |
+| `feet_slide` | -0.1 | Penalize feet sliding during contact |
 
 ## Why use a reference gait
 
@@ -63,6 +67,17 @@ The response was to:
 - add explicit knee symmetry punishment,
 - increase `feet_air_time`,
 - and raise the reference gait amplitudes.
+
+### Hardening reward design against sim-to-real failure modes
+
+Benchmarking against agibot_x1_train and unitree_rl_lab revealed several gaps:
+
+- **Velocity tracking moved to yaw frame.** Body-frame x velocity tilts with the robot, producing incorrect reward signals when the robot leans. Yaw-frame velocity removes roll/pitch from the rotation before computing the error, keeping the signal horizontal regardless of tilt.
+- **`joint_pos_limits` raised from -0.05 to -2.0.** The original weight was 40× weaker than comparable projects. Hardware joints hitting their limits is a common cause of actuator damage on real robots.
+- **`lin_vel_z` added at -1.5.** Without this, the policy can learn to bounce rather than walk. All three reference projects include this term.
+- **`ang_vel_xy` added at -0.1.** Penalizes roll and pitch angular velocity. The previous design only penalized yaw, allowing large fore-aft and lateral body sway.
+- **`action_rate` raised from -0.004 to -0.03.** Reduces joint chatter, which causes motor heating on real hardware.
+- **`feet_slide` added at -0.1.** Penalizes horizontal foot velocity during ground contact, closing a common sim-to-real gap where the policy learns to drag feet instead of lifting them.
 
 ### Improving compatibility with newer `rsl-rl`
 

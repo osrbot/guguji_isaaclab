@@ -206,8 +206,8 @@ The reward function balances forward locomotion with gait quality:
 
 | Term | Weight | Purpose |
 |------|--------|---------|
-| `track_lin_vel_x_exp` | +4.8 | Track commanded forward velocity |
-| `forward_progress` | +6.0 | Reward actual forward displacement |
+| `track_lin_vel_x_exp` | +4.8 | Track commanded forward velocity (yaw frame) |
+| `forward_progress` | +6.0 | Reward actual forward displacement (yaw frame) |
 | `alive_bonus` | +0.6 | Survive the episode |
 | `upright` | +1.6 | Keep base upright |
 | `height` | +0.9 | Maintain target base height (0.32 m) |
@@ -215,13 +215,17 @@ The reward function balances forward locomotion with gait quality:
 | `knee_flexion` | +0.8 | Maintain target knee flexion (0.38 rad) |
 | `feet_air_time` | +1.5 | Each foot spends time in the air |
 | `yaw_rate` | -0.5 | Penalize spinning / circling |
+| `ang_vel_xy` | -0.1 | Penalize roll/pitch angular velocity (body sway) |
+| `lin_vel_z` | -1.5 | Penalize vertical bouncing |
 | `lateral_velocity` | -0.3 | Penalize sideways drift |
-| `knee_symmetry` | -1.0 | Penalize left/right knee asymmetry |
-| `backward_velocity` | -2.8 | Penalize moving backward |
-| `stall_penalty` | -4.6 | Penalize standing still when commanded to move |
-| `action_rate` | -0.004 | Smooth actions |
-| `joint_pos_limits` | -0.05 | Stay within joint limits |
+| `knee_symmetry` | -2.0 | Penalize left/right knee asymmetry |
+| `hip_symmetry` | -1.5 | Penalize non-antiphase hip motion |
+| `backward_velocity` | -2.8 | Penalize moving backward (yaw frame) |
+| `stall_penalty` | -4.6 | Penalize standing still when commanded to move (yaw frame) |
+| `action_rate` | -0.03 | Smooth actions |
+| `joint_pos_limits` | -2.0 | Stay within joint limits |
 | `undesired_knee_contacts` | -1.0 | Penalize knee hitting the ground |
+| `feet_slide` | -0.1 | Penalize feet sliding during ground contact |
 
 ## Reference Gait
 

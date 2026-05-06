@@ -206,8 +206,8 @@ guguji_isaaclab/
 
 | 奖励项 | 权重 | 作用 |
 |--------|------|------|
-| `track_lin_vel_x_exp` | +4.8 | 跟踪指令前进速度 |
-| `forward_progress` | +6.0 | 奖励实际前进位移 |
+| `track_lin_vel_x_exp` | +4.8 | 跟踪指令前进速度（yaw frame） |
+| `forward_progress` | +6.0 | 奖励实际前进位移（yaw frame） |
 | `alive_bonus` | +0.6 | 存活奖励 |
 | `upright` | +1.6 | 保持躯干直立 |
 | `height` | +0.9 | 维持目标躯干高度（0.32 m） |
@@ -215,13 +215,17 @@ guguji_isaaclab/
 | `knee_flexion` | +0.8 | 维持目标膝关节弯曲角度（0.38 rad） |
 | `feet_air_time` | +1.5 | 每只脚都有离地时间 |
 | `yaw_rate` | -0.5 | 惩罚偏航旋转（防止绕圈） |
+| `ang_vel_xy` | -0.1 | 惩罚翻滚/俯仰角速度（躯干晃动） |
+| `lin_vel_z` | -1.5 | 惩罚垂直弹跳 |
 | `lateral_velocity` | -0.3 | 惩罚侧向漂移 |
-| `knee_symmetry` | -1.0 | 惩罚左右膝关节不对称（防止跛行） |
-| `backward_velocity` | -2.8 | 惩罚后退 |
-| `stall_penalty` | -4.6 | 有指令时惩罚原地不动 |
-| `action_rate` | -0.004 | 平滑动作输出 |
-| `joint_pos_limits` | -0.05 | 保持在关节限位内 |
+| `knee_symmetry` | -2.0 | 惩罚左右膝关节不对称（防止跛行） |
+| `hip_symmetry` | -1.5 | 惩罚髋关节非反相运动 |
+| `backward_velocity` | -2.8 | 惩罚后退（yaw frame） |
+| `stall_penalty` | -4.6 | 有指令时惩罚原地不动（yaw frame） |
+| `action_rate` | -0.03 | 平滑动作输出 |
+| `joint_pos_limits` | -2.0 | 保持在关节限位内 |
 | `undesired_knee_contacts` | -1.0 | 惩罚膝盖触地 |
+| `feet_slide` | -0.1 | 惩罚接触时脚部滑动 |
 
 ## 参考步态
 
