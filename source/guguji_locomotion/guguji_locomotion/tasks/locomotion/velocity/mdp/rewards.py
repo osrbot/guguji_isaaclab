@@ -356,7 +356,7 @@ def feet_slide(
         > 1.0
     )
     asset = env.scene[asset_cfg.name]
-    body_vel = asset.data.body_lin_vel_w[:, asset_cfg.body_ids, :2]
+    body_vel = asset.data.body_lin_vel_w[:, sensor_cfg.body_ids, :2]
     return torch.sum(body_vel.norm(dim=-1) * contacts, dim=1)
 
 
